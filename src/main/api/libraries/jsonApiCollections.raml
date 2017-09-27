@@ -1,0 +1,90 @@
+#%RAML 1.0 Library
+usage: |
+  jsonapi collection-item resourceTypes library.
+  Usage:
+  ```
+  uses:
+    col: libraries/jsonApiCollections.raml
+  ```
+  For reasons I don't quite understand, you must use this with the same uses key name
+  (api) in your main api.raml and any other libraries that reference types defined in jsonApiLibrary.raml.
+  For other reasons I don't understand, this can't just be part of jsonApiLibrary.raml.
+uses:
+  api: jsonApiLibrary.raml
+resourceTypes:
+  collection:
+    usage: |
+      This resourceType should be used for any collection of items.
+      Parameters:
+        dataType: the type name of the primary data
+        exampleCollection: an example of the api.success response
+    description: The collection of <<resourcePathName>>
+    get:
+      responses: 
+        200:
+          body: 
+            application/vnd.api+json:
+              type: api.success
+              properties: 
+                data: <<dataType>>[]
+              example: 
+                <<exampleCollection>>
+        404:
+          body:
+            application/vnd.api+json:
+              type: api.failure
+              example:
+                errors:
+                  - status: "404"
+                    title: Resource not found
+                    detail: <<resourcePath>> not found 
+    post:
+      body: 
+        application/vnd.api+json:
+          type: <<dataType>>
+      responses:
+        200:
+          body: 
+            application/vnd.api+json:
+              type: api.success
+              properties: 
+                data: <<dataType>>
+              example: <<exampleItem>>
+  item:
+    usage: |
+      This resourceType should be used for any single items
+      Parameters:
+        dataType: the type name of the primary data (must subclass api.response)
+        exampleItem: an example of the api.success response
+    description: The <<resourcePathName>> item
+    get:
+      responses: 
+        200:
+          body: 
+            application/vnd.api+json:
+              type: api.success
+              properties: 
+                data: <<dataType>>
+              example: 
+                <<exampleItem>>
+        404:
+          body:
+            application/vnd.api+json:
+              type: api.failure
+              example:
+                errors:
+                  - status: "404"
+                    title: Resource not found
+                    detail: <<resourcePath>> not found 
+    patch:
+      body: 
+        application/vnd.api+json:
+          type: <<dataType>>
+      responses:
+        200:
+          body: 
+            application/vnd.api+json:
+              type: api.success
+              properties: 
+                data: <<dataType>>
+              example: <<exampleItem>>
