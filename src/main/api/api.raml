@@ -31,6 +31,7 @@ uses:
   loc: libraries/LocationType.raml
   wid: libraries/WidgetType.raml
   col: libraries/jsonApiCollections.raml
+  cu: libraries/columbiaLibrary.raml
 
 # the API's resources:
 /widgets:
@@ -41,11 +42,51 @@ uses:
       dataType: wid.Widget
       exampleCollection: !include examples/WidgetCollectionExample.raml
       exampleItem: !include examples/WidgetItemExample.raml
+  get:
+    securedBy: 
+      - cu.oauth_2_0:
+          scopes: [auth-columbia, read]
+      - cu.oauth_2_0:
+          scopes: [auth-facebook, read]
+      - cu.oauth_2_0:
+          scopes: [auth-google, read]
+      - cu.oauth_2_0:
+          scopes: [auth-none, read]
+  post:
+    securedBy: 
+      - cu.oauth_2_0:
+          scopes: [auth-columbia, create]
+      - cu.oauth_2_0:
+          scopes: [auth-facebook, create]
+      - cu.oauth_2_0:
+          scopes: [auth-google, create]
+      - cu.oauth_2_0:
+          scopes: [auth-none, create]
   /{id}:
     type: 
      col.item:
         dataType: wid.Widget
         exampleItem: !include examples/WidgetItemExample.raml
+    get:
+      securedBy: 
+        - cu.oauth_2_0:
+            scopes: [auth-columbia, read]
+        - cu.oauth_2_0:
+            scopes: [auth-facebook, read]
+        - cu.oauth_2_0:
+            scopes: [auth-google, read]
+        - cu.oauth_2_0:
+            scopes: [auth-none, read]
+    patch:
+      securedBy: 
+        - cu.oauth_2_0:
+            scopes: [auth-columbia, update]
+        - cu.oauth_2_0:
+            scopes: [auth-facebook, update]
+        - cu.oauth_2_0:
+            scopes: [auth-google, update]
+        - cu.oauth_2_0:
+            scopes: [auth-none, update]
 /locations:
   displayName: locations
   description: inventory locations

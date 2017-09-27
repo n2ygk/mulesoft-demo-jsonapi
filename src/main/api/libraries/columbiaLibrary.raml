@@ -1,0 +1,56 @@
+#%RAML 1.0 Library
+usage: |
+  RAML library for Columbia University APIs. Including:
+  - securitySchemes
+  - ...
+  Usage:
+  ```
+  uses:
+    cu: libraries/columbiaLibrary.raml
+  ```
+
+securitySchemes:
+  oauth_2_0:
+    type: OAuth 2.0
+    description: |
+      This API supports OAuth 2.0 for authenticating all API requests.
+    describedBy:
+      headers:
+        Authorization?:
+          description: |
+            Used to send a valid OAuth 2 access token. Do not use with the "access_token" query string parameter.
+          type: string
+      queryParameters:
+        access_token?:
+          description: |
+            Used to send a valid OAuth 2 access token. Do not use together with the "Authorization" header
+          type: string
+      responses:
+        401:
+          description: |
+                Bad or expired token. This can happen if the user or the API revoked or expired an access token. To fix, you should re-authenticate the user.
+        403:
+          description: |
+                Bad OAuth request (wrong consumer key, bad nonce, expired timestamp...). Unfortunately,
+                re-authenticating the user won't help here.
+    settings:
+      authorizationUri: https://oauth.cc.columbia.edu/as/authorization.oauth2
+      accessTokenUri: https://oauth.cc.columbia.edu/as/token.oauth2
+      # override the list of authorizationGrants and scopes in your API.
+      authorizationGrants: 
+        - client_credentials
+        - authorization_code
+      scopes: 
+        - openid
+        - auth-columbia
+        - auth-facebook
+        - auth-google
+        - auth-linkedin
+        - auth-twitter
+        - auth-windowslive
+        - auth-none
+        - create
+        - read
+        - update
+        - delete
+        - demo-netphone-admin
