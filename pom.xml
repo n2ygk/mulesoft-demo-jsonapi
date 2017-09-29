@@ -130,6 +130,12 @@
             <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>
+    <dependency>
+            <groupId>com.mulesoft.anypoint</groupId>
+            <artifactId>api-gateway-client</artifactId>
+            <version>3.8.5</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 	<repositories>
