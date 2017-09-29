@@ -1,14 +1,24 @@
 #%RAML 1.0 Library
 usage: |
   RAML library for Columbia University APIs. Including:
-  - securitySchemes
-  - ...
+  - securitySchemes: 
+    oauth_2_0: Columbia's production OAuth 2.0 service.
+    oauth_2_0_test: Columbia's test OAuth 2.0 service.
+  - traits, is: (all defined only for the production OAuth 2.0 service)
+    oauth_authz_grant: requires the Authorization Code grant.
+    oauth_creds_grant: requires the Client Credentials grant.
+    oauth_read_columbia: Authorization Code w/scopes: auth-columbia, read.
+    oauth_read_any: Authorization Code w/scopes read and one of auth-{columbia,facebook,google} or Client Credentials scope auth-none.
+    oauth_create_{columbia,any}: as above with create scope
+    oauth_update_{columbia,any}: as above with update scope
+    oauth_delete_{columbia,any}: as above with delete scope
   Usage:
   ```
   uses:
     cu: libraries/columbiaLibrary.raml
   ```
-
+# TO DO
+# add traits for common security schemes.
 securitySchemes:
   oauth_2_0:
     type: OAuth 2.0
@@ -54,3 +64,104 @@ securitySchemes:
         - update
         - delete
         - demo-netphone-admin
+traits: 
+  oauth_authz_grant:
+    securedBy:
+      - oauth_2_0:
+          authorizationGrants:
+            - authorization_code
+  oauth_creds_grant:
+    securedBy:
+      - oauth_2_0:
+          authorizationGrants:
+            - client_credentials
+  oauth_read_columbia:
+    is:
+      - oauth_authz_grant
+    securedBy:
+      - oauth_2_0:
+          scopes:
+            - read
+            - auth-columbia
+  oauth_read_any:
+    is:
+      - oauth_authz_grant
+    securedBy:
+      - oauth_2_0:
+          scopes:
+            - read
+            - auth-columbia
+      - oauth_2_0:
+          scopes:
+            - read
+            - auth-facebook
+      - oauth_2_0:
+          scopes:
+            - read
+            - auth-google
+      - oauth_2_0:
+          scopes:
+            - read
+            - auth-none
+          authorizationGrants:
+            - client_credentials
+  oauth_create_columbia:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, create]
+  oauth_create_any:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, create]
+      - oauth_2_0:
+          scopes: [auth-facebook, create]
+      - oauth_2_0:
+          scopes: [auth-google, create]
+      - oauth_2_0:
+          scopes: [auth-none, create]
+          authorizationGrants:
+            - client_credentials
+  oauth_update_columbia:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, update]
+  oauth_update_any:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, update]
+      - oauth_2_0:
+          scopes: [auth-facebook, update]
+      - oauth_2_0:
+          scopes: [auth-google, update]
+      - oauth_2_0:
+          scopes: [auth-none, update]
+          authorizationGrants:
+            - client_credentials
+  oauth_delete_columbia:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, delete]
+  oauth_delete_any:
+    is:
+      - oauth_authz_grant
+    securedBy: 
+      - oauth_2_0:
+          scopes: [auth-columbia, delete]
+      - oauth_2_0:
+          scopes: [auth-facebook, delete]
+      - oauth_2_0:
+          scopes: [auth-google, delete]
+      - oauth_2_0:
+          scopes: [auth-none, delete]
+          authorizationGrants:
+            - client_credentials
