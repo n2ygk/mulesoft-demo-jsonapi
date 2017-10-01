@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
-http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/schema/mule/api-platform-gw/current/mule-api-platform-gw.xsd">
+http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/schema/mule/api-platform-gw/current/mule-api-platform-gw.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
     <http:listener-config name="api-httpListenerConfig" host="0.0.0.0" port="${https.port}" doc:name="HTTP Listener Configuration" basePath="${api.version}" protocol="HTTPS">
         <tls:context>
             <tls:key-store type="jks" path="server.jks" alias="serverkey" keyPassword="password" password="password"/>
@@ -15,14 +16,25 @@ http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/sche
     <flow name="api-main">
         <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
         <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
-        <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/>
+		<!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
+		<!--  replace default global exception strategy with my jsonapi-flavored one -->
+        <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
     </flow>
     <flow name="api-console">
         <http:listener config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
         <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
     </flow>
     <flow name="patch:/widgets/{id}:application/vnd.api+json:api-config">
+        <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[// example throwing a custom 409 exception
+throw new patchConflictException('foobar')
+//throw new org.mule.module.apikit.exception.NotFoundException("foo")
+]]></scripting:script>
+        </scripting:component>
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+		<!--  example of a flow-specific reference exception strategy -->
+<!--         <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
+ -->
     </flow>
     <flow name="patch:/locations/{id}:application/vnd.api+json:api-config">
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
@@ -45,6 +57,76 @@ http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/sche
     <flow name="post:/widgets:application/vnd.api+json:api-config">
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
     </flow>
+    <!-- turn this into a reusabe snippet -->
+    <apikit:mapping-exception-strategy name="jsonapi-exception-mapping" >
+    	<apikit:mapping statusCode="409">
+            <apikit:exception value="patchConflictException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;409&quot;,
+		   &quot;status&quot;: &quot;409&quot;,
+		   &quot;title&quot;: &quot;Conflict&quot;,
+		   &quot;detail&quot;: &quot;patch conflicts&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+    	</apikit:mapping>
+        <apikit:mapping statusCode="404">
+            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;404&quot;,
+		   &quot;status&quot;: &quot;404&quot;,
+		   &quot;title&quot;: &quot;Resource not found&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="405">
+            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;405&quot;,
+		   &quot;status&quot;: &quot;405&quot;,
+		   &quot;title&quot;: &quot;Method not allowed&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="415">
+            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;415&quot;,
+		   &quot;status&quot;: &quot;415&quot;,
+		   &quot;title&quot;: &quot;Unsupported media type&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="406">
+            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;406&quot;,
+		   &quot;status&quot;: &quot;406&quot;,
+		   &quot;title&quot;: &quot;Not acceptable&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+        </apikit:mapping>
+        <apikit:mapping statusCode="400">
+            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [
+               { 
+		   &quot;id&quot;: &quot;400&quot;,
+		   &quot;status&quot;: &quot;400&quot;,
+		   &quot;title&quot;: &quot;Bad request&quot;
+               }
+             ]}" doc:name="Set Payload"/>
+        </apikit:mapping>
+	</apikit:mapping-exception-strategy>
     <apikit:mapping-exception-strategy name="api-apiKitGlobalExceptionMapping">
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
