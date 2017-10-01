@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     <apikit:mapping-exception-strategy name="jsonapi-exception-mapping" >
     	<apikit:mapping statusCode="409">
             <apikit:exception value="patchConflictException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;409&quot;,
@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     	</apikit:mapping>
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;404&quot;,
@@ -34,7 +34,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </apikit:mapping>
         <apikit:mapping statusCode="405">
             <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;405&quot;,
@@ -45,7 +45,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </apikit:mapping>
         <apikit:mapping statusCode="415">
             <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;415&quot;,
@@ -56,7 +56,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </apikit:mapping>
         <apikit:mapping statusCode="406">
             <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;406&quot;,
@@ -67,7 +67,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         </apikit:mapping>
         <apikit:mapping statusCode="400">
             <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [
                { 
 		   &quot;id&quot;: &quot;400&quot;,
