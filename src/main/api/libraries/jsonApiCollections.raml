@@ -82,9 +82,49 @@ resourceTypes:
           type: <<dataType>>
       responses:
         200:
+          description: |
+            The PATCH was accepted and some values may have changed beyond those specified.
+            The response contains the result of those updates.
           body: 
             application/vnd.api+json:
               type: api.success
               properties: 
                 data: <<dataType>>
               example: <<exampleItem>>
+        202:
+          description: Accepted for processing. Request has not yet completed.
+        204:
+          description: No Content. Only those changes submitted have been applied.
+        403:
+          description: Forbidden
+          body:
+            application/vnd.api+json:
+              type: api.failure
+        404:
+          description: Not Found
+          body:
+            application/vnd.api+json:
+              type: api.failure
+              example:
+                errors:
+                  - status: "404"
+                    title: Resource not found
+                    detail: <<resourcePath>> not found 
+        409:
+          description: Conflict. The update would violate other server-enforced constraints including type and id mismatch.
+          body:
+            application/vnd.api+json:
+              type: api.failure
+              example:
+                errors:
+                  - status: "409"
+                    title: Conflict
+    delete: # this part is confusing.... See http://jsonapi.org/format/#crud-deleting
+      body: 
+        application/vnd.api+json:
+          type: <<dataType>>
+      responses:
+        200:
+          body: 
+            application/vnd.api+json:
+              type: api.success
