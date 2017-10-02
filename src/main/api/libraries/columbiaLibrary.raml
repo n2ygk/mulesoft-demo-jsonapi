@@ -5,8 +5,6 @@ usage: |
     oauth_2_0: Columbia's production OAuth 2.0 service.
     oauth_2_0_test: Columbia's test OAuth 2.0 service.
   - traits, is: (all defined only for the production OAuth 2.0 service)
-    oauth_authz_grant: requires the Authorization Code grant.
-    oauth_creds_grant: requires the Client Credentials grant.
     oauth_read_columbia: Authorization Code w/scopes: auth-columbia, read.
     oauth_read_any: Authorization Code w/scopes read and one of auth-{columbia,facebook,google} or Client Credentials scope auth-none.
     oauth_create_{columbia,any}: as above with create scope
@@ -16,6 +14,11 @@ usage: |
   ```
   uses:
     cu: libraries/columbiaLibrary.raml
+  ...
+  /widgets:
+    ...
+    get:
+      is: [ oauth_read_any ]
   ```
 # TO DO
 # add traits for common security schemes.
@@ -65,103 +68,89 @@ securitySchemes:
         - delete
         - demo-netphone-admin
 traits: 
-  oauth_authz_grant:
-    securedBy:
-      - oauth_2_0:
-          authorizationGrants:
-            - authorization_code
-  oauth_creds_grant:
-    securedBy:
-      - oauth_2_0:
-          authorizationGrants:
-            - client_credentials
   oauth_read_columbia:
-    is:
-      - oauth_authz_grant
     securedBy:
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes:
             - read
             - auth-columbia
   oauth_read_any:
-    is:
-      - oauth_authz_grant
     securedBy:
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes:
             - read
             - auth-columbia
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes:
             - read
             - auth-facebook
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes:
             - read
             - auth-google
       - oauth_2_0:
+          authorizationGrants: [ client_credentials ]
           scopes:
             - read
             - auth-none
-          authorizationGrants:
-            - client_credentials
   oauth_create_columbia:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, create]
   oauth_create_any:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, create]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-facebook, create]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-google, create]
       - oauth_2_0:
+          authorizationGrants: [ client_credentials ]
           scopes: [auth-none, create]
-          authorizationGrants:
-            - client_credentials
   oauth_update_columbia:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, update]
   oauth_update_any:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, update]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-facebook, update]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-google, update]
       - oauth_2_0:
+          authorizationGrants: [ client_credentials ]
           scopes: [auth-none, update]
-          authorizationGrants:
-            - client_credentials
   oauth_delete_columbia:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, delete]
   oauth_delete_any:
-    is:
-      - oauth_authz_grant
     securedBy: 
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, delete]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-facebook, delete]
       - oauth_2_0:
+          authorizationGrants: [ authorization_code ]
           scopes: [auth-google, delete]
       - oauth_2_0:
+          authorizationGrants: [ client_credentials ]
           scopes: [auth-none, delete]
-          authorizationGrants:
-            - client_credentials
