@@ -1,5 +1,7 @@
 #%RAML 1.0 NamedExample
 value:
+  links:
+    self: /widgets?filter[Location.warehouse]=Briarcliff+Manor,Secaucus&filter[Widget.name]=foobar&sort=-Widget.name
   data: 
     - type: Widget
       id: "123"

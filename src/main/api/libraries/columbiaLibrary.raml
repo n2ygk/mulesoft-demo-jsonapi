@@ -4,13 +4,15 @@ usage: |
   - securitySchemes: 
     oauth_2_0: Columbia's production OAuth 2.0 service.
     oauth_2_0_test: Columbia's test OAuth 2.0 service.
-  - traits, is: (all defined only for the production OAuth 2.0 service)
+  - traits (defined only for the production OAuth 2.0 service):
     oauth_read_columbia: Authorization Code w/scopes: auth-columbia, read.
-    oauth_read_any: Authorization Code w/scopes read and one of auth-{columbia,facebook,google} or Client Credentials scope auth-none.
+    oauth_read_any: Authorization Code w/scopes `read` and one of
+      auth-{columbia,facebook,google,linkedin,twitter,windowslive}
+      or Client Credentials scope auth-none.
     oauth_create_{columbia,any}: as above with create scope
     oauth_update_{columbia,any}: as above with update scope
     oauth_delete_{columbia,any}: as above with delete scope
-  Usage:
+  Example usage:
   ```
   uses:
     cu: libraries/columbiaLibrary.raml
@@ -20,8 +22,11 @@ usage: |
     get:
       is: [ oauth_read_any ]
   ```
-# TO DO
-# add traits for common security schemes.
+  
+  Copyright (c) 2017 The Trustees of Columbia University in the City of New York
+uses:
+  oa2: oAuth2Types.raml
+
 securitySchemes:
   oauth_2_0:
     type: OAuth 2.0
@@ -39,13 +44,25 @@ securitySchemes:
             Used to send a valid OAuth 2 access token. Do not use together with the "Authorization" header
           type: string
       responses:
+        200:
+          description: |
+            Access Token successfully issued.
+          body:
+            application/json:
+              type: oa2.success
         401:
           description: |
                 Bad or expired token. This can happen if the user or the API revoked or expired an access token. To fix, you should re-authenticate the user.
+          body: 
+            application/json:
+              type: oa2.error
         403:
           description: |
                 Bad OAuth request (wrong consumer key, bad nonce, expired timestamp...). Unfortunately,
                 re-authenticating the user won't help here.
+          body: 
+            application/json:
+              type: oa2.error
     settings:
       authorizationUri: https://oauth.cc.columbia.edu/as/authorization.oauth2
       accessTokenUri: https://oauth.cc.columbia.edu/as/token.oauth2
@@ -67,7 +84,26 @@ securitySchemes:
         - update
         - delete
         - demo-netphone-admin
-traits: 
+traits:
+  protected:
+    description: common snippet for protected resource errors
+    responses: 
+      401:
+        description: Unauthorized
+        body: 
+          application/json:
+            type: oa2.error
+      403:
+        description: Forbidden
+        body: 
+          application/json:
+            type: oa2.error
+      429:  
+        description: rate-limiting policy SLA has been exceeded.
+        body:
+          application/text:
+            type: string
+            example: API calls exceeded
   oauth_read_columbia:
     securedBy:
       - oauth_2_0:
@@ -75,6 +111,7 @@ traits:
           scopes:
             - read
             - auth-columbia
+    is: [ protected ]
   oauth_read_any:
     securedBy:
       - oauth_2_0:
@@ -97,6 +134,7 @@ traits:
           scopes:
             - read
             - auth-none
+    is: [ protected ]
   oauth_create_columbia:
     securedBy: 
       - oauth_2_0:
@@ -116,6 +154,7 @@ traits:
       - oauth_2_0:
           authorizationGrants: [ client_credentials ]
           scopes: [auth-none, create]
+    is: [ protected ]
   oauth_update_columbia:
     securedBy: 
       - oauth_2_0:
@@ -135,11 +174,13 @@ traits:
       - oauth_2_0:
           authorizationGrants: [ client_credentials ]
           scopes: [auth-none, update]
+    is: [ protected ]
   oauth_delete_columbia:
     securedBy: 
       - oauth_2_0:
           authorizationGrants: [ authorization_code ]
           scopes: [auth-columbia, delete]
+    is: [ protected ]
   oauth_delete_any:
     securedBy: 
       - oauth_2_0:
@@ -154,3 +195,4 @@ traits:
       - oauth_2_0:
           authorizationGrants: [ client_credentials ]
           scopes: [auth-none, delete]
+    is: [ protected ]
