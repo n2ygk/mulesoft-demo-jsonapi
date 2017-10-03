@@ -7,4 +7,11 @@ public class patchConflictException extends Exception {
     public patchConflictException(String message) {
         super(message);
     }
+    public patchConflictException(String message, Throwable t) {
+        super(message, t);
+    }
+    
+    public patchConflictException(Throwable t) {
+    		super(t);
+    }
 }

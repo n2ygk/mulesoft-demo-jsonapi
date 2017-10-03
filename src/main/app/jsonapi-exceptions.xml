@@ -2,24 +2,17 @@
 
 <mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.8.5"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
     <!--  jsonapi 1.0 exception handlers for use with apikit -->
     <apikit:mapping-exception-strategy name="jsonapi-exception-mapping" >
     	<apikit:mapping statusCode="409">
             <apikit:exception value="patchConflictException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [
-               { 
-		   &quot;id&quot;: &quot;409&quot;,
-		   &quot;status&quot;: &quot;409&quot;,
-		   &quot;title&quot;: &quot;Conflict&quot;,
-		   &quot;detail&quot;: &quot;patch conflicts&quot;
-               }
-             ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;409&quot;,      &quot;status&quot;: &quot;409&quot;,      &quot;title&quot;: &quot;Conflict&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                }              ]}" doc:name="Set Payload"/>
     	</apikit:mapping>
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
