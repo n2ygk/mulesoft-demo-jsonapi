@@ -36,6 +36,7 @@
         <AsyncLogger name="org.springframework.beans.factory" level="WARN"/>
 
         <!-- Mule classes -->
+        <AsyncLogger name="org.mule.module.scripting.component.Scriptable" level="DEBUG"/>
         <AsyncLogger name="org.mule" level="INFO"/>
         <AsyncLogger name="com.mulesoft" level="INFO"/>
 
