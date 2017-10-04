@@ -27,8 +27,7 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
     <flow name="patch:/widgets/{id}:application/vnd.api+json:api-config">
         <scripting:component doc:name="Groovy">
             <scripting:script engine="Groovy"><![CDATA[// example throwing a custom 409 exception
-throw new patchConflictException('foobar')
-//throw new org.mule.module.apikit.exception.NotFoundException("foo")
+throw new PatchConflictException('foobar')
 ]]></scripting:script>
         </scripting:component>
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>

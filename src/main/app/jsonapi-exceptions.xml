@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     <!--  jsonapi 1.0 exception handlers for use with apikit -->
     <apikit:mapping-exception-strategy name="jsonapi-exception-mapping" >
     	<apikit:mapping statusCode="409">
-            <apikit:exception value="patchConflictException" />
+            <apikit:exception value="PatchConflictException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;409&quot;,      &quot;status&quot;: &quot;409&quot;,      &quot;title&quot;: &quot;Conflict&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                }              ]}" doc:name="Set Payload"/>
     	</apikit:mapping>
