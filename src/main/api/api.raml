@@ -43,7 +43,7 @@ uses:
       exampleCollection: !include examples/WidgetCollectionExample.raml
       exampleItem: !include examples/WidgetItemExample.raml
   get:
-    is: [ cu.oauth_read_any, col.pageable ]
+    is: [ cu.oauth_read_any, col.all-the-things ]
   post:
     is: [ cu.oauth_create_any ]
   /{id}:
@@ -66,7 +66,7 @@ uses:
       exampleCollection: !include examples/LocationCollectionExample.raml
       exampleItem: !include examples/LocationItemExample.raml
   get:
-    is: [ cu.oauth_read_any, col.pageable ]
+    is: [ cu.oauth_read_any, col.all-the-things ]
   post:
     is: [ cu.oauth_create_any ]
   /{id}:
