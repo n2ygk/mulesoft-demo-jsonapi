@@ -30,6 +30,7 @@ usage: >
   limitations under the License.
 uses:
   api: jsonApiLibrary.raml
+
 resourceTypes:
   collection:
     usage: |
@@ -201,4 +202,32 @@ resourceTypes:
                 errors:
                   - status: "404"
                     title: Resource not found
-                    detail: <<resourcePath>> not found  
+                    detail: <<resourcePath>> not found
+      
+traits: 
+  pageable:
+    description: |
+      Collection response is paginated with links: {self, first, next, prev, last} references.
+    queryParameters: 
+      page[number]:
+        description: Starts at page number
+        type: integer
+        required: false
+      page[size]:
+        description: Page size. Number of items per page.
+        type: integer
+        required: false
+      page[offset]:
+        description: Page offset. Starting item number.
+        type: integer
+        required: false
+      page[limit]:
+        description: Page limit. Limit on number of items or pages returned.
+        type: integer
+        required: false
+      page[cursor]:
+        description: Page cursor.
+        type: integer
+        required: false
+       
+      
