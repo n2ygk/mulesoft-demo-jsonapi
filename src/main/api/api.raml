@@ -34,6 +34,9 @@ uses:
   cu: libraries/columbiaLibrary.raml
 
 # the API's resources:
+/store:
+  post:
+    is: [ cu.oauth_create_any ]  
 /widgets:
   displayName: widgets
   description: stuff we have in inventory

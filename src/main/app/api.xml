@@ -1,87 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/schema/mule/api-platform-gw/current/mule-api-platform-gw.xsd
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
     <http:listener-config name="api-httpListenerConfig" host="0.0.0.0" port="${https.port}" doc:name="HTTP Listener Configuration" basePath="${api.version}" protocol="HTTPS">
         <tls:context>
-            <tls:key-store type="jks" path="server.jks" alias="serverkey" keyPassword="password" password="password"/>
+            <tls:key-store type="jks" path="server.jks" alias="serverkey" keyPassword="password" password="password" />
         </tls:context>
     </http:listener-config>
-    <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"/>
-    <api-platform-gw:api apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery"/>
+    <apikit:config name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router" />
+    <api-platform-gw:api apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery" />
+    <objectstore:config name="ObjectStore__Connector" objectStore-ref="_defaultUserObjectStore" entryTtl="0" persistent="true" doc:name="ObjectStore: Connector" />
     <flow name="api-main">
-        <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP"/>
-        <apikit:router config-ref="api-config" doc:name="APIkit Router"/>
-		<!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
-		<!--  replace default global exception strategy with my jsonapi-flavored one -->
-        <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
+        <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
+        <apikit:router config-ref="api-config" doc:name="APIkit Router" />
+        <!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
+        <!--  replace default global exception strategy with my jsonapi-flavored one -->
+        <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy" />
     </flow>
     <flow name="api-console">
-        <http:listener config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP"/>
-        <apikit:console config-ref="api-config" doc:name="APIkit Console"/>
+        <http:listener config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP" />
+        <apikit:console config-ref="api-config" doc:name="APIkit Console" />
     </flow>
     <flow name="patch:/widgets/{id}:application/vnd.api+json:api-config">
         <scripting:component doc:name="Groovy">
             <scripting:script engine="Groovy"><![CDATA[// example throwing a custom 409 exception
-throw new PatchConflictException('foobar')
-]]></scripting:script>
+throw new PatchConflictException('foobar')]]></scripting:script>
         </scripting:component>
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
-		<!--  example of a flow-specific reference exception strategy -->
-<!--         <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
+        <!--  example of a flow-specific reference exception strategy -->
+        <!--         <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
  -->
     </flow>
     <flow name="patch:/locations/{id}:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/locations/{id}:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/widgets/{id}:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/locations:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;12&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;NYC&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;2&quot;,&#xA;&quot;bin&quot; : &quot;3&quot;&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;12&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;NYC&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;2&quot;,&#xA;&quot;bin&quot; : &quot;3&quot;&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/widgets:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;foobar&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;foobar&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="post:/locations:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <flow-ref name="POSTflow" doc:name="POSTflow"/>
+        <flow-ref name="GETflow" doc:name="GETflow" doc:description="DO a fetch of what was just POSTed. Technically not required..."/>
+        <set-property propertyName="http.status" value="201" doc:name="Set 201"/>
+        <set-property propertyName="location" value="#[message.inboundProperties.'http.request.path'+'/'+flowVars.id]" doc:name="set Location header"/>
+    </flow>
+    <flow name="POSTflow">
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="id" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create UUID"/>
+        <scripting:transformer doc:name="Python">
+            <scripting:script engine="jython"><![CDATA[payload['id'] = flowVars['id']
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.id]" value-ref="#[payload]" doc:name="Store Object"/>
+    </flow>
+    <flow name="GETflow">
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.id]" doc:name="Get Object"/>
     </flow>
     <flow name="post:/widgets:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
-
+    <flow name="delete:/locations/{id}:api-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="delete:/widgets/{id}:api-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="post:/store:api-config">
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="key" value="#[payload.key]" doc:name="Variable"/>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.key]" value-ref="#[payload.value]" doc:name="Set Object"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload.key]" doc:name="Get Object"/>
+        <set-payload value="{&quot;key&quot;: &quot;#[flowVars.key]&quot;,&quot;value&quot;:&quot;#[payload]&quot;}" mimeType="application/json" doc:name="Set Payload"/>
+        <set-property propertyName="http.status" value="201" doc:name="Property"/>
+    </flow>
     <apikit:mapping-exception-strategy name="api-apiKitGlobalExceptionMapping">
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload"/>
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload" />
         </apikit:mapping>
         <apikit:mapping statusCode="405">
             <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload"/>
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload" />
         </apikit:mapping>
         <apikit:mapping statusCode="415">
             <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload"/>
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload" />
         </apikit:mapping>
         <apikit:mapping statusCode="406">
             <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload"/>
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload" />
         </apikit:mapping>
         <apikit:mapping statusCode="400">
             <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property"/>
-            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload"/>
+            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
+            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload" />
         </apikit:mapping>
     </apikit:mapping-exception-strategy>
 </mule>
