@@ -37,5 +37,16 @@ result = payload]]></scripting:script>
         <object-to-string-transformer doc:name="Object to String"/>
         <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
+    <flow name="jsonapiQueryParamsValidation" doc:description="Validate that only allowed json:api query parameters are present.">
+        <scripting:transformer doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[def QPnames = ['page','sort','fields','filter','include']
+def props = message.getInboundProperty('http.query.params')
+props.each{ k, v ->
+ println "GROOVY: "+k
+ def key = k.replaceFirst(/\[.*$/,"")
+ if (!QPnames.contains(key)) throw new org.mule.module.apikit.exception.BadRequestException('unexpected query parameter: '+key)
+}]]></scripting:script>
+        </scripting:transformer>
+    </flow>
 
 </mule>

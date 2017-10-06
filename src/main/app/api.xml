@@ -48,9 +48,11 @@ throw new PatchConflictException('foobar')]]></scripting:script>
         <flow-ref name="jsonapiGETflow" doc:name="jsonapiGETflow"/>
     </flow>
     <flow name="get:/locations:api-config">
+        <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"/>
         <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;12&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;NYC&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;2&quot;,&#xA;&quot;bin&quot; : &quot;3&quot;&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/widgets:api-config">
+        <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"/>
         <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;foobar&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="post:/locations:application/vnd.api+json:api-config">
