@@ -42,10 +42,10 @@ throw new PatchConflictException('foobar')]]></scripting:script>
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/locations/{id}:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
+        <flow-ref name="jsonapiGETflow" doc:name="jsonapiGETflow"/>
     </flow>
     <flow name="get:/widgets/{id}:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
+        <flow-ref name="jsonapiGETflow" doc:name="jsonapiGETflow"/>
     </flow>
     <flow name="get:/locations:api-config">
         <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;12&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;NYC&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;2&quot;,&#xA;&quot;bin&quot; : &quot;3&quot;&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
@@ -54,26 +54,10 @@ throw new PatchConflictException('foobar')]]></scripting:script>
         <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;foobar&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;]&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="post:/locations:application/vnd.api+json:api-config">
-        <flow-ref name="POSTflow" doc:name="POSTflow"/>
-        <flow-ref name="GETflow" doc:name="GETflow" doc:description="DO a fetch of what was just POSTed. Technically not required..."/>
-        <set-property propertyName="http.status" value="201" doc:name="Set 201"/>
-        <set-property propertyName="location" value="#[message.inboundProperties.'http.request.path'+'/'+flowVars.id]" doc:name="set Location header"/>
+        <flow-ref name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"/>
     </flow>
-    <flow name="POSTflow">
-        <object-to-string-transformer doc:name="Object to String"/>
-        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
-        <set-variable variableName="id" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create UUID"/>
-        <scripting:transformer doc:name="Python">
-            <scripting:script engine="jython"><![CDATA[payload['id'] = flowVars['id']
-result = payload]]></scripting:script>
-        </scripting:transformer>
-        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.id]" value-ref="#[payload]" doc:name="Store Object"/>
-    </flow>
-    <flow name="GETflow">
-        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.id]" doc:name="Get Object"/>
-    </flow>
-    <flow name="post:/widgets:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Widget&quot;,&#xA;&quot;id&quot; : &quot;14&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;name&quot; : &quot;can opener&quot;,&#xA;&quot;qty&quot; : 47,&#xA;&quot;locations&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;10510&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;333&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Secaucus&quot;,&#xA;&quot;aisle&quot; : &quot;1&quot;,&#xA;&quot;shelf&quot; : &quot;1&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;]&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
+    <flow name="post:/widgets:application/vnd.api+json:api-config" doc:description="The Widget contains optional Location objects. Iterate over those and POST them first?">
+        <flow-ref name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"/>
     </flow>
     <flow name="delete:/locations/{id}:api-config">
         <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
@@ -81,40 +65,4 @@ result = payload]]></scripting:script>
     <flow name="delete:/widgets/{id}:api-config">
         <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
     </flow>
-    <flow name="post:/store:api-config">
-        <object-to-string-transformer doc:name="Object to String"/>
-        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
-        <set-variable variableName="key" value="#[payload.key]" doc:name="Variable"/>
-        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.key]" value-ref="#[payload.value]" doc:name="Set Object"/>
-        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload.key]" doc:name="Get Object"/>
-        <set-payload value="{&quot;key&quot;: &quot;#[flowVars.key]&quot;,&quot;value&quot;:&quot;#[payload]&quot;}" mimeType="application/json" doc:name="Set Payload"/>
-        <set-property propertyName="http.status" value="201" doc:name="Property"/>
-    </flow>
-    <apikit:mapping-exception-strategy name="api-apiKitGlobalExceptionMapping">
-        <apikit:mapping statusCode="404">
-            <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
-            <set-payload value="{ &quot;message&quot;: &quot;Resource not found&quot; }" doc:name="Set Payload" />
-        </apikit:mapping>
-        <apikit:mapping statusCode="405">
-            <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
-            <set-payload value="{ &quot;message&quot;: &quot;Method not allowed&quot; }" doc:name="Set Payload" />
-        </apikit:mapping>
-        <apikit:mapping statusCode="415">
-            <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
-            <set-payload value="{ &quot;message&quot;: &quot;Unsupported media type&quot; }" doc:name="Set Payload" />
-        </apikit:mapping>
-        <apikit:mapping statusCode="406">
-            <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
-            <set-payload value="{ &quot;message&quot;: &quot;Not acceptable&quot; }" doc:name="Set Payload" />
-        </apikit:mapping>
-        <apikit:mapping statusCode="400">
-            <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
-            <set-property propertyName="Content-Type" value="application/json" doc:name="Property" />
-            <set-payload value="{ &quot;message&quot;: &quot;Bad request&quot; }" doc:name="Set Payload" />
-        </apikit:mapping>
-    </apikit:mapping-exception-strategy>
 </mule>

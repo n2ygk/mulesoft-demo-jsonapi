@@ -16,14 +16,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     	</apikit:mapping>
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
+            <apikit:exception value="org.mule.api.store.ObjectDoesNotExistException"/>
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [
-               { 
-		   &quot;id&quot;: &quot;404&quot;,
-		   &quot;status&quot;: &quot;404&quot;,
-		   &quot;title&quot;: &quot;Resource not found&quot;
-               }
-             ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;404&quot;,      &quot;status&quot;: &quot;404&quot;,      &quot;title&quot;: &quot;Resource not found&quot;, &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                 }              ]}" doc:name="Set Payload"/>
         </apikit:mapping>
         <apikit:mapping statusCode="405">
             <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />

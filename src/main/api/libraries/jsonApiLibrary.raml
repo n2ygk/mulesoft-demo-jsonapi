@@ -8,7 +8,8 @@ usage: >
   
   The following CHANGES have been made from the schema:
     - resource.id is _not_ required because for POST request body it is optional whereas it is mandatory for response body.
-    - XXX TODO: something to do with pagelinks but I forget what
+      I'm not super-happy with this compromise.
+    - I couldn't represent allOf for `links` so made a `pagelinks` type which extends `link`.
   
   See the related jsonApiCollections.raml Library for useful resourceTypes and traits that uses these types.
   

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+    <flow name="jsonapiPOSTflow">
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="id" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create UUID"/>
+        <scripting:transformer doc:name="Set id">
+            <scripting:script engine="jython"><![CDATA[payload['id'] = flowVars['id']
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.id]" value-ref="#[payload]" doc:name="Store Object"/>
+        <set-property propertyName="http.status" value="201" doc:name="Set 201 status"/>
+        <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+    </flow>
+
+    <flow name="jsonapiGETflow">
+        <set-variable variableName="id" value="#[message.inboundProperties.'http.uri.params'.id]" doc:name="Get id"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.id]" doc:name="Get Object"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+    </flow>
+
+</mule>
