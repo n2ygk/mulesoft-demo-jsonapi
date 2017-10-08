@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>demo-jsonapi · Anypoint Studio Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/bootstrap.css" rel="stylesheet">
+    <link href="assets/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/docs.css" rel="stylesheet">
+    <link href="assets/prettify.css" rel="stylesheet">
+    <link href="assets/scroller.css" rel="stylesheet">
+
+  </head>
+
+  <body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar"><iframe style="display: none;" id="rufous-sandbox" name="uid13460061790411"></iframe>
+
+    <!-- Navbar
+    ================================================== -->
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand pull-left" href="#">demo-jsonapi</a>
+          <p class="navbar-text pull-right">
+              <a href="http://www.mulesoft.com" class="navbar-link">
+                <img src="./assets/images/mulesoft-logo-final.png" alt="MuleSoft" id="mulesoftlogo">
+              </a>
+          </p>
+          <div class="scroller scroller-left"><img src="./assets/icons/glyphicons_chevron-left.png" alt="scrollLeft"></div>
+          <div class="scroller scroller-right"><img src="./assets/icons/glyphicons_chevron-right.png" alt="scrollRight"></div>
+          <div class="wrapper">
+            <ul class="nav nav-tabs list" id="myTab">
+                                                                    <li><a href="./index.html">jsonapi-flows</a></li>
+                                                                                                            <li class="active"><a href="./jsonapi-exceptions.html">jsonapi-exceptions</a></li>
+                                                                                                              <li><a href="./api.html">api</a></li>
+                                                                </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  <header class="jumbotron subhead" id="overview">
+    <div class="container">
+      <h1>demo-jsonapi</h1>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix">
+          <li class="nav-header">Flows</li>
+                  </ul>
+      </div>
+      <div class="span9">
+
+        <!-- Elements and their descriptions
+        ================================================== -->
+        <div style="max-height: 640px;width:100%;overflow:auto;">
+                      <img src="img/jsonapi_exceptions.png" usemap="#mFlowMap" alt="Mule Configuration Image">
+            <map name="mFlowMap">
+                      </map>
+                  </div>
+        <!--Mule configuration xml code-->
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapseMuleConfiguration">
+            Show Mule Configuration XML code...
+          </a>
+        </div>
+        <div id="collapseMuleConfiguration" class="accordion-body collapse" style="height: 0px;">
+          <div class="accordion-inner">
+              <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;mule xmlns="http://www.mulesoft.org/schema/mule/core" version="EE-3.8.5"&gt;
+    &lt;apikit:mapping-exception-strategy xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" name="jsonapi-exception-mapping"&gt;
+        &lt;apikit:mapping statusCode="409"&gt;
+            &lt;apikit:exception value="PatchConflictException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;409&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Conflict&amp;quot;,      &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;                }              ]}" doc:name="Set Payload"&gt;  &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+        &lt;apikit:mapping statusCode="404"&gt;
+            &lt;apikit:exception value="org.mule.module.apikit.exception.NotFoundException"/&gt;
+            &lt;apikit:exception value="org.mule.api.store.ObjectDoesNotExistException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;404&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Resource not found&amp;quot;, &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;                 }              ]}" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+        &lt;apikit:mapping statusCode="405"&gt;
+            &lt;apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;405&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Method not allowed&amp;quot;,      &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;                }              ]}" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+        &lt;apikit:mapping statusCode="415"&gt;
+            &lt;apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;415&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Unsupported media type&amp;quot; ,      &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;               }              ]}" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+        &lt;apikit:mapping statusCode="406"&gt;
+            &lt;apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;406&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Not acceptable&amp;quot;,      &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;                }              ]}" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+        &lt;apikit:mapping statusCode="400"&gt;
+            &lt;apikit:exception value="org.mule.module.apikit.exception.BadRequestException"/&gt;
+            &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"&gt;   &lt;/set-property&gt;
+            &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;errors&amp;quot;:  [                {       &amp;quot;id&amp;quot;: &amp;quot;#[java.util.UUID.randomUUID().toString()]&amp;quot;,      &amp;quot;status&amp;quot;: &amp;quot;400&amp;quot;,      &amp;quot;title&amp;quot;: &amp;quot;Bad request&amp;quot; ,      &amp;quot;detail&amp;quot;: &amp;quot;#[exception.cause.message]&amp;quot;               }              ]}" doc:name="Set Payload"&gt;   &lt;/set-payload&gt;
+        &lt;/apikit:mapping&gt;
+    &lt;/apikit:mapping-exception-strategy&gt;
+&lt;/mule&gt;
+</code></pre>
+
+          </div>
+        </div>
+
+              </div>
+    </div>
+  </div>
+
+<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>Designed and built with <a href="http://www.mulesoft.com/mule-studio/" target="_blank">Anypoint Studio</a>.</p>
+        <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Icons from <a href="http://glyphicons.com/">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <ul class="footer-links">
+          <li><a href="http://blogs.mulesoft.org/">Read the blog</a></li>
+          <li><a href="http://www.mulesoft.org/jira/browse/">Submit issues</a></li>
+        </ul>
+      </div>
+    </footer>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/widgets.js"></script>
+    <script src="assets/jquery.js"></script>
+    <script src="assets/prettify.js"></script>
+    <script src="assets/bootstrap-transition.js"></script>
+    <script src="assets/bootstrap-alert.js"></script>
+    <script src="assets/bootstrap-modal.js"></script>
+    <script src="assets/bootstrap-dropdown.js"></script>
+    <script src="assets/bootstrap-scrollspy.js"></script>
+    <script src="assets/bootstrap-tab.js"></script>
+    <script src="assets/bootstrap-tooltip.js"></script>
+    <script src="assets/bootstrap-popover.js"></script>
+    <script src="assets/bootstrap-button.js"></script>
+    <script src="assets/bootstrap-collapse.js"></script>
+    <script src="assets/bootstrap-carousel.js"></script>
+    <script src="assets/bootstrap-typeahead.js"></script>
+    <script src="assets/bootstrap-affix.js"></script>
+    <script src="assets/scroller.js"></script>
+    <script src="assets/application.js"></script>
+
+</body>
+</html>

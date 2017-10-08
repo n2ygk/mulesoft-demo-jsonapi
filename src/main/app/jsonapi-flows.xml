@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -12,16 +12,20 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
-http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
-    <flow name="jsonapiPOSTflow">
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+    <objectstore:config name="ObjectStore__Connector" objectStore-ref="_defaultUserObjectStore" entryTtl="0" persistent="true" doc:name="ObjectStore: Connector" />
+    <flow name="jsonapiPOSTitem">
         <object-to-string-transformer doc:name="Object to String"/>
         <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
-        <set-variable variableName="id" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create UUID"/>
-        <scripting:transformer doc:name="Set id">
-            <scripting:script engine="jython"><![CDATA[payload['id'] = flowVars['id']
+        <scripting:transformer doc:name="Set id &amp; key">
+            <scripting:script engine="jython"><![CDATA[import uuid
+flowVars['id'] = str(uuid.uuid4())
+payload['id'] = flowVars['id']
+flowVars['key'] = payload['type']+':'+flowVars['id']
 result = payload]]></scripting:script>
         </scripting:transformer>
-        <objectstore:store config-ref="ObjectStore__Connector" key="#[payload.id]" value-ref="#[payload]" doc:name="Store Object"/>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Store Object"/>
         <set-property propertyName="http.status" value="201" doc:name="Set 201 status"/>
         <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
@@ -29,24 +33,49 @@ result = payload]]></scripting:script>
         <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
 
-    <flow name="jsonapiGETflow">
-        <set-variable variableName="id" value="#[message.inboundProperties.'http.uri.params'.id]" doc:name="Get id"/>
-        <logger level="INFO" doc:name="Logger"/>
-        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.id]" doc:name="Get Object"/>
+    <flow name="jsonapiGETitem" doc:description="Get item with id &lt;type&gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
         <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
+    <flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution.">
+        <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector"  doc:name="Retrieve all keys"/>
+        <foreach doc:name="For Each">
+            <objectstore:remove config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Remove"/>
+        </foreach>
+        <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
+        <set-payload value="#[null]" doc:name="Set Payload"/>
+    </flow>
     <flow name="jsonapiQueryParamsValidation" doc:description="Validate that only allowed json:api query parameters are present.">
+<!--         <scripting:transformer doc:name="Python"> -->
+<!--             <scripting:script engine="jython"><![CDATA[import org.mule.module.apikit.exception.BadRequestException -->
+<!-- raise org.mule.module.apikit.exception.BadRequestException("foo") -->
+<!-- ]]></scripting:script> -->
+<!--         </scripting:transformer> -->
         <scripting:transformer doc:name="Groovy">
             <scripting:script engine="Groovy"><![CDATA[def QPnames = ['page','sort','fields','filter','include']
 def props = message.getInboundProperty('http.query.params')
 props.each{ k, v ->
- println "GROOVY: "+k
- def key = k.replaceFirst(/\[.*$/,"")
- if (!QPnames.contains(key)) throw new org.mule.module.apikit.exception.BadRequestException('unexpected query parameter: '+key)
-}]]></scripting:script>
-        </scripting:transformer>
+  println "GROOVY: "+k
+  def key = k.replaceFirst(/\[.*$/,"")
+  if (!QPnames.contains(key)) throw new org.mule.module.apikit.exception.BadRequestException('unexpected query parameter: '+key)
+}
+]]></scripting:script></scripting:transformer>
+    </flow>
+    <flow name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data.">
+        <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Get All Keys"/>
+        <set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="Variable"/>
+        <foreach doc:name="For Each">
+            <expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/>
+            <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"/>
+            <expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="Expression"/>
+        </foreach>
+        <set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
 
 </mule>
