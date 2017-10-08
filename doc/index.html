@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>demo-jsonapi · Anypoint Studio Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/bootstrap.css" rel="stylesheet">
+    <link href="assets/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/docs.css" rel="stylesheet">
+    <link href="assets/prettify.css" rel="stylesheet">
+    <link href="assets/scroller.css" rel="stylesheet">
+
+  </head>
+
+  <body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar"><iframe style="display: none;" id="rufous-sandbox" name="uid13460061790411"></iframe>
+
+    <!-- Navbar
+    ================================================== -->
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand pull-left" href="#">demo-jsonapi</a>
+          <p class="navbar-text pull-right">
+              <a href="http://www.mulesoft.com" class="navbar-link">
+                <img src="./assets/images/mulesoft-logo-final.png" alt="MuleSoft" id="mulesoftlogo">
+              </a>
+          </p>
+          <div class="scroller scroller-left"><img src="./assets/icons/glyphicons_chevron-left.png" alt="scrollLeft"></div>
+          <div class="scroller scroller-right"><img src="./assets/icons/glyphicons_chevron-right.png" alt="scrollRight"></div>
+          <div class="wrapper">
+            <ul class="nav nav-tabs list" id="myTab">
+                                                                    <li class="active"><a href="./index.html">jsonapi-flows</a></li>
+                                                                                                            <li><a href="./jsonapi-exceptions.html">jsonapi-exceptions</a></li>
+                                                                                                              <li><a href="./api.html">api</a></li>
+                                                                </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  <header class="jumbotron subhead" id="overview">
+    <div class="container">
+      <h1>demo-jsonapi</h1>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix">
+          <li class="nav-header">Flows</li>
+                      <li data-toggle="collapse" data-target="#_jsonapiPOSTflowNav"><a href="#_jsonapiPOSTflow"><i class="icon-chevron-right"></i> jsonapiPOSTflow</a>
+            </li>
+            <div id="_jsonapiPOSTflowNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                                                                                                                                                                                                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_jsonapiGETitemNav"><a href="#_jsonapiGETitem"><i class="icon-chevron-right"></i> jsonapiGETitem</a>
+            </li>
+            <div id="_jsonapiGETitemNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                                                                                                </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_jsonapi_clearObjectStoreNav"><a href="#_jsonapi_clearObjectStore"><i class="icon-chevron-right"></i> jsonapi-clearObjectStore</a>
+            </li>
+            <div id="_jsonapi_clearObjectStoreNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                                                                                                </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_jsonapiQueryParamsValidationNav"><a href="#_jsonapiQueryParamsValidation"><i class="icon-chevron-right"></i> jsonapiQueryParamsValidation</a>
+            </li>
+            <div id="_jsonapiQueryParamsValidationNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_jsonapiGETcollectionNav"><a href="#_jsonapiGETcollection"><i class="icon-chevron-right"></i> jsonapiGETcollection</a>
+            </li>
+            <div id="_jsonapiGETcollectionNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                                                                                                                                                                                                                                                                                              </ul>
+              </div>
+            </div>
+                  </ul>
+      </div>
+      <div class="span9">
+
+        <!-- Elements and their descriptions
+        ================================================== -->
+        <div style="max-height: 640px;width:100%;overflow:auto;">
+                      <img src="img/jsonapi_flows.png" usemap="#mFlowMap" alt="Mule Configuration Image">
+            <map name="mFlowMap">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </map>
+                  </div>
+        <!--Mule configuration xml code-->
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapseMuleConfiguration">
+            Show Mule Configuration XML code...
+          </a>
+        </div>
+        <div id="collapseMuleConfiguration" class="accordion-body collapse" style="height: 0px;">
+          <div class="accordion-inner">
+              <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;mule xmlns="http://www.mulesoft.org/schema/mule/core" version="EE-3.8.5"&gt;
+    &lt;objectstore:config xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="ObjectStore__Connector" objectStore-ref="_defaultUserObjectStore" entryTtl="0" persistent="true" doc:name="ObjectStore: Connector"&gt; &lt;/objectstore:config&gt;
+    &lt;flow name="jsonapiPOSTflow"&gt;
+        &lt;object-to-string-transformer xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" doc:name="Object to String"&gt;    &lt;/object-to-string-transformer&gt;
+        &lt;json:json-to-object-transformer xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" returnClass="java.util.Map" doc:name="JSON to Object"&gt; &lt;/json:json-to-object-transformer&gt;
+        &lt;scripting:transformer xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" doc:name="Set id &amp;amp; key"&gt;
+            &lt;scripting:script engine="jython"&gt;&lt;![CDATA[import uuid
+flowVars['id'] = str(uuid.uuid4())
+payload['id'] = flowVars['id']
+flowVars['key'] = payload['type']+':'+flowVars['id']
+result = payload]]&gt; &lt;/scripting:script&gt;
+        &lt;/scripting:transformer&gt;
+        &lt;objectstore:store xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Store Object"&gt;  &lt;/objectstore:store&gt;
+        &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="http.status" value="201" doc:name="Set 201 status"&gt;   &lt;/set-property&gt;
+        &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="location" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"&gt;    &lt;/set-property&gt;
+        &lt;json:object-to-json-transformer xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" doc:name="Object to JSON"&gt; &lt;/json:object-to-json-transformer&gt;
+        &lt;object-to-string-transformer xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" doc:name="Object to String"&gt;    &lt;/object-to-string-transformer&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"&gt;   &lt;/set-payload&gt;
+    &lt;/flow&gt;
+    &lt;flow xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETitem" doc:description="Get item with id &amp;lt;type&amp;gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?"&gt;
+        &lt;set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/&gt;
+        &lt;objectstore:retrieve xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"&gt;  &lt;/objectstore:retrieve&gt;
+        &lt;json:object-to-json-transformer xmlns:json="http://www.mulesoft.org/schema/mule/json" doc:name="Object to JSON"&gt;   &lt;/json:object-to-json-transformer&gt;
+        &lt;object-to-string-transformer doc:name="Object to String"/&gt;
+        &lt;set-payload value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/&gt;
+    &lt;/flow&gt;
+    &lt;flow xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution."&gt;
+        &lt;objectstore:retrieve-all-keys xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" config-ref="ObjectStore__Connector" doc:name="Retrieve all keys"&gt;    &lt;/objectstore:retrieve-all-keys&gt;
+        &lt;foreach doc:name="For Each"&gt;
+            &lt;objectstore:remove xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Remove"&gt; &lt;/objectstore:remove&gt;
+        &lt;/foreach&gt;
+        &lt;set-property propertyName="http.status" value="204" doc:name="Set 204 status"/&gt;
+        &lt;set-payload value="#[null]" doc:name="Set Payload"/&gt;
+    &lt;/flow&gt;
+    &lt;flow xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiQueryParamsValidation" doc:description="Validate that only allowed json:api query parameters are present."&gt;
+        &lt;scripting:transformer xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" doc:name="Groovy"&gt;
+            &lt;scripting:script engine="Groovy"&gt;&lt;![CDATA[def QPnames = ['page','sort','fields','filter','include']
+def props = message.getInboundProperty('http.query.params')
+props.each{ k, v -&gt;
+println "GROOVY: "+k
+def key = k.replaceFirst(/\[.*$/,"")
+if (!QPnames.contains(key)) throw new org.mule.module.apikit.exception.BadRequestException('unexpected query parameter: '+key)
+}
+]]&gt; &lt;/scripting:script&gt;
+        &lt;/scripting:transformer&gt;
+    &lt;/flow&gt;
+    &lt;flow xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data."&gt;
+        &lt;objectstore:retrieve-all-keys xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" config-ref="ObjectStore__Connector" doc:name="Get All Keys"&gt; &lt;/objectstore:retrieve-all-keys&gt;
+        &lt;set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="Variable"/&gt;
+        &lt;foreach doc:name="For Each"&gt;
+            &lt;expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/&gt;
+            &lt;objectstore:retrieve xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"&gt;  &lt;/objectstore:retrieve&gt;
+            &lt;expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="Expression"/&gt;
+        &lt;/foreach&gt;
+        &lt;set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/&gt;
+        &lt;json:object-to-json-transformer xmlns:json="http://www.mulesoft.org/schema/mule/json" doc:name="Object to JSON"&gt;   &lt;/json:object-to-json-transformer&gt;
+        &lt;object-to-string-transformer doc:name="Object to String"/&gt;
+        &lt;set-payload value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/&gt;
+    &lt;/flow&gt;
+&lt;/mule&gt;
+</code></pre>
+
+          </div>
+        </div>
+
+                  <section id="_jsonapiPOSTflow">
+            <div class="page-header">
+                <h1>jsonapiPOSTflow <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/jsonapiPOSTflow.png" usemap="#flowMapjsonapiPOSTflow" alt="jsonapiPOSTflow image">
+                <map name="flowMapjsonapiPOSTflow">
+                                                                                                                                                                                                                                                                                                                                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_jsonapiPOSTflowxml_code">
+                  Show configuration XML code of the flow jsonapiPOSTflow...
+                </a>
+              </div>
+              <div id="_jsonapiPOSTflowxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="jsonapiPOSTflow"&gt;
+    &lt;object-to-string-transformer doc:name="Object to String"&gt;  &lt;/object-to-string-transformer&gt;
+    &lt;json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"&gt; &lt;/json:json-to-object-transformer&gt;
+    &lt;scripting:transformer doc:name="Set id &amp;amp; key"&gt;
+        &lt;scripting:script engine="jython"&gt;&lt;![CDATA[import uuid
+flowVars['id'] = str(uuid.uuid4())
+payload['id'] = flowVars['id']
+flowVars['key'] = payload['type']+':'+flowVars['id']
+result = payload]]&gt; &lt;/scripting:script&gt;
+    &lt;/scripting:transformer&gt;
+    &lt;objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Store Object"&gt;    &lt;/objectstore:store&gt;
+    &lt;set-property propertyName="http.status" value="201" doc:name="Set 201 status"&gt; &lt;/set-property&gt;
+    &lt;set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"&gt;  &lt;/set-property&gt;
+    &lt;json:object-to-json-transformer doc:name="Object to JSON"&gt; &lt;/json:object-to-json-transformer&gt;
+    &lt;object-to-string-transformer doc:name="Object to String"&gt;  &lt;/object-to-string-transformer&gt;
+    &lt;set-payload value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"&gt; &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                                                                                                                                                                                                                </section>
+                  <section id="_jsonapiGETitem">
+            <div class="page-header">
+                <h1>jsonapiGETitem <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/jsonapiGETitem.png" usemap="#flowMapjsonapiGETitem" alt="jsonapiGETitem image">
+                <map name="flowMapjsonapiGETitem">
+                                                                                                                                                                                                                                </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_jsonapiGETitemxml_code">
+                  Show configuration XML code of the flow jsonapiGETitem...
+                </a>
+              </div>
+              <div id="_jsonapiGETitemxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="jsonapiGETitem" doc:description="Get item with id &amp;lt;type&amp;gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?"&gt;
+    &lt;set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/&gt;
+    &lt;objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"&gt;  &lt;/objectstore:retrieve&gt;
+    &lt;json:object-to-json-transformer doc:name="Object to JSON"&gt; &lt;/json:object-to-json-transformer&gt;
+    &lt;object-to-string-transformer doc:name="Object to String"/&gt;
+    &lt;set-payload value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p><p>Get item with id <type>:id. Infers the type from the http.request.path??? or just expect it to be set upstream?</p>
+</p>
+            </div>
+                                                                                                                                                        </section>
+                  <section id="_jsonapi_clearObjectStore">
+            <div class="page-header">
+                <h1>jsonapi-clearObjectStore <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/jsonapi_clearObjectStore.png" usemap="#flowMapjsonapi_clearObjectStore" alt="jsonapi_clearObjectStore image">
+                <map name="flowMapjsonapi_clearObjectStore">
+                                                                                                                                                                                                                                </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_jsonapi_clearObjectStorexml_code">
+                  Show configuration XML code of the flow jsonapi-clearObjectStore...
+                </a>
+              </div>
+              <div id="_jsonapi_clearObjectStorexml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution."&gt;
+    &lt;objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Retrieve all keys"&gt;    &lt;/objectstore:retrieve-all-keys&gt;
+    &lt;foreach doc:name="For Each"&gt;
+        &lt;objectstore:remove config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Remove"&gt; &lt;/objectstore:remove&gt;
+    &lt;/foreach&gt;
+    &lt;set-property propertyName="http.status" value="204" doc:name="Set 204 status"/&gt;
+    &lt;set-payload value="#[null]" doc:name="Set Payload"/&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p><p>Utility to clear the object store. Use with caution.</p>
+</p>
+            </div>
+                                                                                                                                                        </section>
+                  <section id="_jsonapiQueryParamsValidation">
+            <div class="page-header">
+                <h1>jsonapiQueryParamsValidation <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/jsonapiQueryParamsValidation.png" usemap="#flowMapjsonapiQueryParamsValidation" alt="jsonapiQueryParamsValidation image">
+                <map name="flowMapjsonapiQueryParamsValidation">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_jsonapiQueryParamsValidationxml_code">
+                  Show configuration XML code of the flow jsonapiQueryParamsValidation...
+                </a>
+              </div>
+              <div id="_jsonapiQueryParamsValidationxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="jsonapiQueryParamsValidation" doc:description="Validate that only allowed json:api query parameters are present."&gt;
+    &lt;scripting:transformer doc:name="Groovy"&gt;
+        &lt;scripting:script engine="Groovy"&gt;&lt;![CDATA[def QPnames = ['page','sort','fields','filter','include']
+def props = message.getInboundProperty('http.query.params')
+props.each{ k, v -&gt;
+println "GROOVY: "+k
+def key = k.replaceFirst(/\[.*$/,"")
+if (!QPnames.contains(key)) throw new org.mule.module.apikit.exception.BadRequestException('unexpected query parameter: '+key)
+}
+]]&gt; &lt;/scripting:script&gt;
+    &lt;/scripting:transformer&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p><p>Validate that only allowed json:api query parameters are present.</p>
+</p>
+            </div>
+                                                </section>
+                  <section id="_jsonapiGETcollection">
+            <div class="page-header">
+                <h1>jsonapiGETcollection <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/jsonapiGETcollection.png" usemap="#flowMapjsonapiGETcollection" alt="jsonapiGETcollection image">
+                <map name="flowMapjsonapiGETcollection">
+                                                                                                                                                                                                                                                                                                                                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_jsonapiGETcollectionxml_code">
+                  Show configuration XML code of the flow jsonapiGETcollection...
+                </a>
+              </div>
+              <div id="_jsonapiGETcollectionxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data."&gt;
+    &lt;objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Get All Keys"&gt; &lt;/objectstore:retrieve-all-keys&gt;
+    &lt;set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="Variable"/&gt;
+    &lt;foreach doc:name="For Each"&gt;
+        &lt;expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/&gt;
+        &lt;objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"&gt;  &lt;/objectstore:retrieve&gt;
+        &lt;expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="Expression"/&gt;
+    &lt;/foreach&gt;
+    &lt;set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/&gt;
+    &lt;json:object-to-json-transformer doc:name="Object to JSON"&gt; &lt;/json:object-to-json-transformer&gt;
+    &lt;object-to-string-transformer doc:name="Object to String"/&gt;
+    &lt;set-payload value="{&amp;quot;data&amp;quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p><p>TODO: Fix this to properly wrap data.</p>
+</p>
+            </div>
+                                                                                                                                                                                                                                                                                          </section>
+              </div>
+    </div>
+  </div>
+
+<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>Designed and built with <a href="http://www.mulesoft.com/mule-studio/" target="_blank">Anypoint Studio</a>.</p>
+        <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Icons from <a href="http://glyphicons.com/">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <ul class="footer-links">
+          <li><a href="http://blogs.mulesoft.org/">Read the blog</a></li>
+          <li><a href="http://www.mulesoft.org/jira/browse/">Submit issues</a></li>
+        </ul>
+      </div>
+    </footer>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/widgets.js"></script>
+    <script src="assets/jquery.js"></script>
+    <script src="assets/prettify.js"></script>
+    <script src="assets/bootstrap-transition.js"></script>
+    <script src="assets/bootstrap-alert.js"></script>
+    <script src="assets/bootstrap-modal.js"></script>
+    <script src="assets/bootstrap-dropdown.js"></script>
+    <script src="assets/bootstrap-scrollspy.js"></script>
+    <script src="assets/bootstrap-tab.js"></script>
+    <script src="assets/bootstrap-tooltip.js"></script>
+    <script src="assets/bootstrap-popover.js"></script>
+    <script src="assets/bootstrap-button.js"></script>
+    <script src="assets/bootstrap-collapse.js"></script>
+    <script src="assets/bootstrap-carousel.js"></script>
+    <script src="assets/bootstrap-typeahead.js"></script>
+    <script src="assets/bootstrap-affix.js"></script>
+    <script src="assets/scroller.js"></script>
+    <script src="assets/application.js"></script>
+
+</body>
+</html>

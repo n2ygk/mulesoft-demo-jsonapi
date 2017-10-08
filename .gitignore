@@ -45,4 +45,6 @@ local.properties
 .studio/
 flows/
 target/
-src/main/api/.repository/ 
+src/main/api/.repository/
+catalog/
+*~

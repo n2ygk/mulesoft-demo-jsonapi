@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>demo-jsonapi · Anypoint Studio Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="assets/bootstrap.css" rel="stylesheet">
+    <link href="assets/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/docs.css" rel="stylesheet">
+    <link href="assets/prettify.css" rel="stylesheet">
+    <link href="assets/scroller.css" rel="stylesheet">
+
+  </head>
+
+  <body data-twttr-rendered="true" data-spy="scroll" data-target=".bs-docs-sidebar"><iframe style="display: none;" id="rufous-sandbox" name="uid13460061790411"></iframe>
+
+    <!-- Navbar
+    ================================================== -->
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand pull-left" href="#">demo-jsonapi</a>
+          <p class="navbar-text pull-right">
+              <a href="http://www.mulesoft.com" class="navbar-link">
+                <img src="./assets/images/mulesoft-logo-final.png" alt="MuleSoft" id="mulesoftlogo">
+              </a>
+          </p>
+          <div class="scroller scroller-left"><img src="./assets/icons/glyphicons_chevron-left.png" alt="scrollLeft"></div>
+          <div class="scroller scroller-right"><img src="./assets/icons/glyphicons_chevron-right.png" alt="scrollRight"></div>
+          <div class="wrapper">
+            <ul class="nav nav-tabs list" id="myTab">
+                                                                    <li><a href="./index.html">jsonapi-flows</a></li>
+                                                                                                            <li><a href="./jsonapi-exceptions.html">jsonapi-exceptions</a></li>
+                                                                                                              <li class="active"><a href="./api.html">api</a></li>
+                                                                </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  <header class="jumbotron subhead" id="overview">
+    <div class="container">
+      <h1>demo-jsonapi</h1>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Docs nav
+    ================================================== -->
+    <div class="row">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix">
+          <li class="nav-header">Flows</li>
+                      <li data-toggle="collapse" data-target="#_api_mainNav"><a href="#_api_main"><i class="icon-chevron-right"></i> api-main</a>
+            </li>
+            <div id="_api_mainNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                    </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_api_consoleNav"><a href="#_api_console"><i class="icon-chevron-right"></i> api-console</a>
+            </li>
+            <div id="_api_consoleNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                              </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_patch_widgets_id_application_vnd_api_json_api_configNav"><a href="#_patch_widgets_id_application_vnd_api_json_api_config"><i class="icon-chevron-right"></i> patch:/widgets/{id}:application/vnd.api+json:api-config</a>
+            </li>
+            <div id="_patch_widgets_id_application_vnd_api_json_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_patch_locations_id_application_vnd_api_json_api_configNav"><a href="#_patch_locations_id_application_vnd_api_json_api_config"><i class="icon-chevron-right"></i> patch:/locations/{id}:application/vnd.api+json:api-config</a>
+            </li>
+            <div id="_patch_locations_id_application_vnd_api_json_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_get_locations_id_api_configNav"><a href="#_get_locations_id_api_config"><i class="icon-chevron-right"></i> get:/locations/{id}:api-config</a>
+            </li>
+            <div id="_get_locations_id_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                              </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_get_widgets_id_api_configNav"><a href="#_get_widgets_id_api_config"><i class="icon-chevron-right"></i> get:/widgets/{id}:api-config</a>
+            </li>
+            <div id="_get_widgets_id_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                              </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_get_locations_api_configNav"><a href="#_get_locations_api_config"><i class="icon-chevron-right"></i> get:/locations:api-config</a>
+            </li>
+            <div id="_get_locations_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                    </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_get_widgets_api_configNav"><a href="#_get_widgets_api_config"><i class="icon-chevron-right"></i> get:/widgets:api-config</a>
+            </li>
+            <div id="_get_widgets_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                    </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_post_locations_application_vnd_api_json_api_configNav"><a href="#_post_locations_application_vnd_api_json_api_config"><i class="icon-chevron-right"></i> post:/locations:application/vnd.api+json:api-config</a>
+            </li>
+            <div id="_post_locations_application_vnd_api_json_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_post_widgets_application_vnd_api_json_api_configNav"><a href="#_post_widgets_application_vnd_api_json_api_config"><i class="icon-chevron-right"></i> post:/widgets:application/vnd.api+json:api-config</a>
+            </li>
+            <div id="_post_widgets_application_vnd_api_json_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_delete_locations_id_api_configNav"><a href="#_delete_locations_id_api_config"><i class="icon-chevron-right"></i> delete:/locations/{id}:api-config</a>
+            </li>
+            <div id="_delete_locations_id_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_delete_widgets_id_api_configNav"><a href="#_delete_widgets_id_api_config"><i class="icon-chevron-right"></i> delete:/widgets/{id}:api-config</a>
+            </li>
+            <div id="_delete_widgets_id_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                        </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_delete_objects_api_configNav"><a href="#_delete_objects_api_config"><i class="icon-chevron-right"></i> delete:/objects:api-config</a>
+            </li>
+            <div id="_delete_objects_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                              </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_get_objects_api_configNav"><a href="#_get_objects_api_config"><i class="icon-chevron-right"></i> get:/objects:api-config</a>
+            </li>
+            <div id="_get_objects_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                              </ul>
+              </div>
+            </div>
+                      <li data-toggle="collapse" data-target="#_post_objects_application_vnd_api_json_api_configNav"><a href="#_post_objects_application_vnd_api_json_api_config"><i class="icon-chevron-right"></i> post:/objects:application/vnd.api+json:api-config</a>
+            </li>
+            <div id="_post_objects_application_vnd_api_json_api_configNav" class="accordion-body collapse" style="height: 0px;">
+              <div class="accordion-inner">
+                <ul>
+                                                                                                                                                    </ul>
+              </div>
+            </div>
+                  </ul>
+      </div>
+      <div class="span9">
+
+        <!-- Elements and their descriptions
+        ================================================== -->
+        <div style="max-height: 640px;width:100%;overflow:auto;">
+                      <img src="img/api.png" usemap="#mFlowMap" alt="Mule Configuration Image">
+            <map name="mFlowMap">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </map>
+                  </div>
+        <!--Mule configuration xml code-->
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse" href="#collapseMuleConfiguration">
+            Show Mule Configuration XML code...
+          </a>
+        </div>
+        <div id="collapseMuleConfiguration" class="accordion-body collapse" style="height: 0px;">
+          <div class="accordion-inner">
+              <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;mule xmlns="http://www.mulesoft.org/schema/mule/core" version="EE-3.8.5"&gt;
+    &lt;http:listener-config xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="api-httpListenerConfig" protocol="HTTPS" host="0.0.0.0" port="${https.port}" basePath="${api.version}" doc:name="HTTP Listener Configuration"&gt;
+        &lt;tls:context xmlns:tls="http://www.mulesoft.org/schema/mule/tls"&gt;
+            &lt;tls:key-store type="jks" path="server.jks" alias="serverkey" keyPassword="password" password="password"/&gt;
+        &lt;/tls:context&gt;
+    &lt;/http:listener-config&gt;
+    &lt;apikit:config xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="api-config" raml="api.raml" consoleEnabled="false" doc:name="Router"&gt;  &lt;/apikit:config&gt;
+    &lt;api-platform-gw:api xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery"&gt;   &lt;/api-platform-gw:api&gt;
+    &lt;flow name="api-main"&gt;
+        &lt;http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP"&gt;   &lt;/http:listener&gt;
+        &lt;apikit:router xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" config-ref="api-config" doc:name="APIkit Router"&gt;    &lt;/apikit:router&gt;
+        &lt;exception-strategy xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"&gt;  &lt;/exception-strategy&gt;
+    &lt;/flow&gt;
+    &lt;flow name="api-console"&gt;
+        &lt;http:listener xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP"&gt;   &lt;/http:listener&gt;
+        &lt;apikit:console xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" config-ref="api-config" doc:name="APIkit Console"&gt;  &lt;/apikit:console&gt;
+    &lt;/flow&gt;
+    &lt;flow name="patch:/widgets/{id}:application/vnd.api+json:api-config"&gt;
+        &lt;scripting:component xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" doc:name="Groovy"&gt;
+            &lt;scripting:script engine="Groovy"&gt;&lt;![CDATA[// example throwing a custom 409 exception
+throw new PatchConflictException('foobar')]]&gt;   &lt;/scripting:script&gt;
+        &lt;/scripting:component&gt;
+    &lt;/flow&gt;
+    &lt;flow name="patch:/locations/{id}:application/vnd.api+json:api-config"&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{ &amp;quot;data&amp;quot; : { &amp;quot;type&amp;quot; : &amp;quot;Location&amp;quot;, &amp;quot;id&amp;quot; : &amp;quot;123&amp;quot;, &amp;quot;attributes&amp;quot; : { &amp;quot;warehouse&amp;quot; : &amp;quot;Briarcliff Manor&amp;quot;, &amp;quot;aisle&amp;quot; : &amp;quot;45&amp;quot;, &amp;quot;shelf&amp;quot; : &amp;quot;33&amp;quot;, &amp;quot;bin&amp;quot; : &amp;quot;1&amp;quot; } } }" doc:name="Set Payload"&gt; &lt;/set-payload&gt;
+    &lt;/flow&gt;
+    &lt;flow name="get:/locations/{id}:api-config"&gt;
+        &lt;set-variable xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" variableName="type" value="Location" doc:name="Type is Location"&gt;   &lt;/set-variable&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETitem" doc:name="jsonapiGETitem"&gt;    &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow name="get:/widgets/{id}:api-config"&gt;
+        &lt;set-variable xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" variableName="type" value="Widget" doc:name="Type is Widget"&gt;   &lt;/set-variable&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETitem" doc:name="jsonapiGETitem"&gt;    &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow name="get:/locations:api-config"&gt;
+        &lt;set-variable xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" variableName="type" value="Location" doc:name="Type is Location"&gt;   &lt;/set-variable&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"&gt;    &lt;/flow-ref&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;    &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow name="get:/widgets:api-config"&gt;
+        &lt;set-variable xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" variableName="type" value="Widget" doc:name="Type is Widget"&gt;   &lt;/set-variable&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"&gt;    &lt;/flow-ref&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;    &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow name="post:/locations:application/vnd.api+json:api-config"&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"&gt;  &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="post:/widgets:application/vnd.api+json:api-config" doc:description="The Widget contains optional Location objects. Iterate over those and POST them first?"&gt;
+        &lt;flow-ref name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"/&gt;
+    &lt;/flow&gt;
+    &lt;flow name="delete:/locations/{id}:api-config"&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="#[NullPayload.getInstance()]" doc:name="Set Payload"&gt; &lt;/set-payload&gt;
+    &lt;/flow&gt;
+    &lt;flow name="delete:/widgets/{id}:api-config"&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="#[NullPayload.getInstance()]" doc:name="Set Payload"&gt; &lt;/set-payload&gt;
+    &lt;/flow&gt;
+    &lt;flow name="delete:/objects:api-config"&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore"&gt;    &lt;/flow-ref&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="{&amp;quot;message&amp;quot;: &amp;quot;object store deleted&amp;quot;}" doc:name="Set Payload"&gt;  &lt;/set-payload&gt;
+    &lt;/flow&gt;
+    &lt;flow name="get:/objects:api-config"&gt;
+        &lt;remove-variable xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" variableName="type" doc:name="No type"&gt;  &lt;/remove-variable&gt;
+        &lt;flow-ref xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;    &lt;/flow-ref&gt;
+    &lt;/flow&gt;
+    &lt;flow name="post:/objects:application/vnd.api+json:api-config"&gt;
+        &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="http.status" value="405" doc:name="status 405"&gt;   &lt;/set-property&gt;
+        &lt;set-property xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" propertyName="Allow" value="GET, DELETE" doc:name="allow GET,DELETE"&gt;   &lt;/set-property&gt;
+        &lt;set-payload xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" value="#[null]" doc:name="Set Payload"&gt;  &lt;/set-payload&gt;
+    &lt;/flow&gt;
+&lt;/mule&gt;
+</code></pre>
+
+          </div>
+        </div>
+
+                  <section id="_api_main">
+            <div class="page-header">
+                <h1>api-main <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/api_main.png" usemap="#flowMapapi_main" alt="api_main image">
+                <map name="flowMapapi_main">
+                                                                                                                                                    </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_api_mainxml_code">
+                  Show configuration XML code of the flow api-main...
+                </a>
+              </div>
+              <div id="_api_mainxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="api-main"&gt;
+    &lt;http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP"&gt;   &lt;/http:listener&gt;
+    &lt;apikit:router config-ref="api-config" doc:name="APIkit Router"&gt;    &lt;/apikit:router&gt;
+    &lt;exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"&gt;    &lt;/exception-strategy&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                                                    </section>
+                  <section id="_api_console">
+            <div class="page-header">
+                <h1>api-console <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/api_console.png" usemap="#flowMapapi_console" alt="api_console image">
+                <map name="flowMapapi_console">
+                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_api_consolexml_code">
+                  Show configuration XML code of the flow api-console...
+                </a>
+              </div>
+              <div id="_api_consolexml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="api-console"&gt;
+    &lt;http:listener config-ref="api-httpListenerConfig" path="/console/*" doc:name="HTTP"&gt;   &lt;/http:listener&gt;
+    &lt;apikit:console config-ref="api-config" doc:name="APIkit Console"&gt;  &lt;/apikit:console&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                          </section>
+                  <section id="_patch_widgets_id_application_vnd_api_json_api_config">
+            <div class="page-header">
+                <h1>patch:/widgets/{id}:application/vnd.api+json:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/patch_widgets_id_application_vnd_api_json_api_config.png" usemap="#flowMappatch_widgets_id_application_vnd_api_json_api_config" alt="patch_widgets_id_application_vnd_api_json_api_config image">
+                <map name="flowMappatch_widgets_id_application_vnd_api_json_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_patch_widgets_id_application_vnd_api_json_api_configxml_code">
+                  Show configuration XML code of the flow patch:/widgets/{id}:application/vnd.api+json:api-config...
+                </a>
+              </div>
+              <div id="_patch_widgets_id_application_vnd_api_json_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="patch:/widgets/{id}:application/vnd.api+json:api-config"&gt;
+    &lt;scripting:component doc:name="Groovy"&gt;
+        &lt;scripting:script engine="Groovy"&gt;&lt;![CDATA[// example throwing a custom 409 exception
+throw new PatchConflictException('foobar')]]&gt;   &lt;/scripting:script&gt;
+    &lt;/scripting:component&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                </section>
+                  <section id="_patch_locations_id_application_vnd_api_json_api_config">
+            <div class="page-header">
+                <h1>patch:/locations/{id}:application/vnd.api+json:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/patch_locations_id_application_vnd_api_json_api_config.png" usemap="#flowMappatch_locations_id_application_vnd_api_json_api_config" alt="patch_locations_id_application_vnd_api_json_api_config image">
+                <map name="flowMappatch_locations_id_application_vnd_api_json_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_patch_locations_id_application_vnd_api_json_api_configxml_code">
+                  Show configuration XML code of the flow patch:/locations/{id}:application/vnd.api+json:api-config...
+                </a>
+              </div>
+              <div id="_patch_locations_id_application_vnd_api_json_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="patch:/locations/{id}:application/vnd.api+json:api-config"&gt;
+    &lt;set-payload value="{ &amp;quot;data&amp;quot; : { &amp;quot;type&amp;quot; : &amp;quot;Location&amp;quot;, &amp;quot;id&amp;quot; : &amp;quot;123&amp;quot;, &amp;quot;attributes&amp;quot; : { &amp;quot;warehouse&amp;quot; : &amp;quot;Briarcliff Manor&amp;quot;, &amp;quot;aisle&amp;quot; : &amp;quot;45&amp;quot;, &amp;quot;shelf&amp;quot; : &amp;quot;33&amp;quot;, &amp;quot;bin&amp;quot; : &amp;quot;1&amp;quot; } } }" doc:name="Set Payload"&gt;   &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                </section>
+                  <section id="_get_locations_id_api_config">
+            <div class="page-header">
+                <h1>get:/locations/{id}:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/get_locations_id_api_config.png" usemap="#flowMapget_locations_id_api_config" alt="get_locations_id_api_config image">
+                <map name="flowMapget_locations_id_api_config">
+                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_get_locations_id_api_configxml_code">
+                  Show configuration XML code of the flow get:/locations/{id}:api-config...
+                </a>
+              </div>
+              <div id="_get_locations_id_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="get:/locations/{id}:api-config"&gt;
+    &lt;set-variable variableName="type" value="Location" doc:name="Type is Location"&gt; &lt;/set-variable&gt;
+    &lt;flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem"&gt;  &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                          </section>
+                  <section id="_get_widgets_id_api_config">
+            <div class="page-header">
+                <h1>get:/widgets/{id}:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/get_widgets_id_api_config.png" usemap="#flowMapget_widgets_id_api_config" alt="get_widgets_id_api_config image">
+                <map name="flowMapget_widgets_id_api_config">
+                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_get_widgets_id_api_configxml_code">
+                  Show configuration XML code of the flow get:/widgets/{id}:api-config...
+                </a>
+              </div>
+              <div id="_get_widgets_id_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="get:/widgets/{id}:api-config"&gt;
+    &lt;set-variable variableName="type" value="Widget" doc:name="Type is Widget"&gt; &lt;/set-variable&gt;
+    &lt;flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem"&gt;  &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                          </section>
+                  <section id="_get_locations_api_config">
+            <div class="page-header">
+                <h1>get:/locations:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/get_locations_api_config.png" usemap="#flowMapget_locations_api_config" alt="get_locations_api_config image">
+                <map name="flowMapget_locations_api_config">
+                                                                                                                                                    </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_get_locations_api_configxml_code">
+                  Show configuration XML code of the flow get:/locations:api-config...
+                </a>
+              </div>
+              <div id="_get_locations_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="get:/locations:api-config"&gt;
+    &lt;set-variable variableName="type" value="Location" doc:name="Type is Location"&gt; &lt;/set-variable&gt;
+    &lt;flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"&gt;  &lt;/flow-ref&gt;
+    &lt;flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;  &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                                                    </section>
+                  <section id="_get_widgets_api_config">
+            <div class="page-header">
+                <h1>get:/widgets:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/get_widgets_api_config.png" usemap="#flowMapget_widgets_api_config" alt="get_widgets_api_config image">
+                <map name="flowMapget_widgets_api_config">
+                                                                                                                                                    </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_get_widgets_api_configxml_code">
+                  Show configuration XML code of the flow get:/widgets:api-config...
+                </a>
+              </div>
+              <div id="_get_widgets_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="get:/widgets:api-config"&gt;
+    &lt;set-variable variableName="type" value="Widget" doc:name="Type is Widget"&gt; &lt;/set-variable&gt;
+    &lt;flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation"&gt;  &lt;/flow-ref&gt;
+    &lt;flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;  &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                                                    </section>
+                  <section id="_post_locations_application_vnd_api_json_api_config">
+            <div class="page-header">
+                <h1>post:/locations:application/vnd.api+json:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/post_locations_application_vnd_api_json_api_config.png" usemap="#flowMappost_locations_application_vnd_api_json_api_config" alt="post_locations_application_vnd_api_json_api_config image">
+                <map name="flowMappost_locations_application_vnd_api_json_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_post_locations_application_vnd_api_json_api_configxml_code">
+                  Show configuration XML code of the flow post:/locations:application/vnd.api+json:api-config...
+                </a>
+              </div>
+              <div id="_post_locations_application_vnd_api_json_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="post:/locations:application/vnd.api+json:api-config"&gt;
+    &lt;flow-ref name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"&gt;    &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                </section>
+                  <section id="_post_widgets_application_vnd_api_json_api_config">
+            <div class="page-header">
+                <h1>post:/widgets:application/vnd.api+json:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/post_widgets_application_vnd_api_json_api_config.png" usemap="#flowMappost_widgets_application_vnd_api_json_api_config" alt="post_widgets_application_vnd_api_json_api_config image">
+                <map name="flowMappost_widgets_application_vnd_api_json_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_post_widgets_application_vnd_api_json_api_configxml_code">
+                  Show configuration XML code of the flow post:/widgets:application/vnd.api+json:api-config...
+                </a>
+              </div>
+              <div id="_post_widgets_application_vnd_api_json_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="post:/widgets:application/vnd.api+json:api-config" doc:description="The Widget contains optional Location objects. Iterate over those and POST them first?"&gt;
+    &lt;flow-ref name="jsonapiPOSTflow" doc:name="jsonapiPOSTflow"/&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p><p>The Widget contains optional Location objects. Iterate over those and POST them first?</p>
+</p>
+            </div>
+                                                </section>
+                  <section id="_delete_locations_id_api_config">
+            <div class="page-header">
+                <h1>delete:/locations/{id}:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/delete_locations_id_api_config.png" usemap="#flowMapdelete_locations_id_api_config" alt="delete_locations_id_api_config image">
+                <map name="flowMapdelete_locations_id_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_delete_locations_id_api_configxml_code">
+                  Show configuration XML code of the flow delete:/locations/{id}:api-config...
+                </a>
+              </div>
+              <div id="_delete_locations_id_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="delete:/locations/{id}:api-config"&gt;
+    &lt;set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"&gt;   &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                </section>
+                  <section id="_delete_widgets_id_api_config">
+            <div class="page-header">
+                <h1>delete:/widgets/{id}:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/delete_widgets_id_api_config.png" usemap="#flowMapdelete_widgets_id_api_config" alt="delete_widgets_id_api_config image">
+                <map name="flowMapdelete_widgets_id_api_config">
+                                                                        </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_delete_widgets_id_api_configxml_code">
+                  Show configuration XML code of the flow delete:/widgets/{id}:api-config...
+                </a>
+              </div>
+              <div id="_delete_widgets_id_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="delete:/widgets/{id}:api-config"&gt;
+    &lt;set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"&gt;   &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                </section>
+                  <section id="_delete_objects_api_config">
+            <div class="page-header">
+                <h1>delete:/objects:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/delete_objects_api_config.png" usemap="#flowMapdelete_objects_api_config" alt="delete_objects_api_config image">
+                <map name="flowMapdelete_objects_api_config">
+                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_delete_objects_api_configxml_code">
+                  Show configuration XML code of the flow delete:/objects:api-config...
+                </a>
+              </div>
+              <div id="_delete_objects_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="delete:/objects:api-config"&gt;
+    &lt;flow-ref name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore"&gt;  &lt;/flow-ref&gt;
+    &lt;set-payload value="{&amp;quot;message&amp;quot;: &amp;quot;object store deleted&amp;quot;}" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                          </section>
+                  <section id="_get_objects_api_config">
+            <div class="page-header">
+                <h1>get:/objects:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/get_objects_api_config.png" usemap="#flowMapget_objects_api_config" alt="get_objects_api_config image">
+                <map name="flowMapget_objects_api_config">
+                                                                                                              </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_get_objects_api_configxml_code">
+                  Show configuration XML code of the flow get:/objects:api-config...
+                </a>
+              </div>
+              <div id="_get_objects_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="get:/objects:api-config"&gt;
+    &lt;remove-variable variableName="type" doc:name="No type"&gt;    &lt;/remove-variable&gt;
+    &lt;flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"&gt;  &lt;/flow-ref&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                          </section>
+                  <section id="_post_objects_application_vnd_api_json_api_config">
+            <div class="page-header">
+                <h1>post:/objects:application/vnd.api+json:api-config <img src="./assets/icons/flow.png"></h1>
+            </div>
+            <div class="documentation-indented" style="height:100%;width:100%;overflow:auto;">
+                              <img src="img/post_objects_application_vnd_api_json_api_config.png" usemap="#flowMappost_objects_application_vnd_api_json_api_config" alt="post_objects_application_vnd_api_json_api_config image">
+                <map name="flowMappost_objects_application_vnd_api_json_api_config">
+                                                                                                                                                    </map>
+                          </div>
+            <div class="documentation-indented">
+              <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" href="#_post_objects_application_vnd_api_json_api_configxml_code">
+                  Show configuration XML code of the flow post:/objects:application/vnd.api+json:api-config...
+                </a>
+              </div>
+              <div id="_post_objects_application_vnd_api_json_api_configxml_code" class="accordion-body collapse" style="height: 0px;">
+                <div class="accordion-inner">
+                    <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;flow name="post:/objects:application/vnd.api+json:api-config"&gt;
+    &lt;set-property propertyName="http.status" value="405" doc:name="status 405"&gt; &lt;/set-property&gt;
+    &lt;set-property propertyName="Allow" value="GET, DELETE" doc:name="allow GET,DELETE"&gt; &lt;/set-property&gt;
+    &lt;set-payload value="#[null]" doc:name="Set Payload"&gt;    &lt;/set-payload&gt;
+&lt;/flow&gt;
+</code></pre>
+
+                </div>
+              </div>
+              <p></p>
+            </div>
+                                                                                                    </section>
+              </div>
+    </div>
+  </div>
+
+<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>Designed and built with <a href="http://www.mulesoft.com/mule-studio/" target="_blank">Anypoint Studio</a>.</p>
+        <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <p>Icons from <a href="http://glyphicons.com/">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+        <ul class="footer-links">
+          <li><a href="http://blogs.mulesoft.org/">Read the blog</a></li>
+          <li><a href="http://www.mulesoft.org/jira/browse/">Submit issues</a></li>
+        </ul>
+      </div>
+    </footer>
+
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/widgets.js"></script>
+    <script src="assets/jquery.js"></script>
+    <script src="assets/prettify.js"></script>
+    <script src="assets/bootstrap-transition.js"></script>
+    <script src="assets/bootstrap-alert.js"></script>
+    <script src="assets/bootstrap-modal.js"></script>
+    <script src="assets/bootstrap-dropdown.js"></script>
+    <script src="assets/bootstrap-scrollspy.js"></script>
+    <script src="assets/bootstrap-tab.js"></script>
+    <script src="assets/bootstrap-tooltip.js"></script>
+    <script src="assets/bootstrap-popover.js"></script>
+    <script src="assets/bootstrap-button.js"></script>
+    <script src="assets/bootstrap-collapse.js"></script>
+    <script src="assets/bootstrap-carousel.js"></script>
+    <script src="assets/bootstrap-typeahead.js"></script>
+    <script src="assets/bootstrap-affix.js"></script>
+    <script src="assets/scroller.js"></script>
+    <script src="assets/application.js"></script>
+
+</body>
+</html>
