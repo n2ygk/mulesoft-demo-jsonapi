@@ -3,12 +3,12 @@ usage: Schema for the object store. Can be used to GET and DELETE all objects.
 uses:
   api: jsonApiLibrary.raml
 types:
-  Object:
+  objects:
     type: api.resource
     description: an objectstore entry
     additionalProperties: true
     example:
-        type: Location
+        type: objects
         id: "14"
         attributes:
           warehouse: NYC

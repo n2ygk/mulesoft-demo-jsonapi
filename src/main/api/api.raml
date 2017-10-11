@@ -40,7 +40,7 @@ uses:
   description: stuff we have in inventory
   type: 
     col.collection: 
-      dataType: wid.Widget
+      dataType: wid.widgets
       exampleCollection: !include examples/WidgetCollectionExample.raml
       exampleItem: !include examples/WidgetItemExample.raml
   get:
@@ -50,7 +50,7 @@ uses:
   /{id}:
     type: 
      col.item:
-        dataType: wid.Widget
+        dataType: wid.widgets
         exampleItem: !include examples/WidgetItemExample.raml
     get:
       is: [ cu.oauth_read_any, col.sparse ]
@@ -63,7 +63,7 @@ uses:
   description: inventory locations
   type: 
     col.collection: 
-      dataType: loc.Location
+      dataType: loc.locations
       exampleCollection: !include examples/LocationCollectionExample.raml
       exampleItem: !include examples/LocationItemExample.raml
   get:
@@ -73,7 +73,7 @@ uses:
   /{id}:
     type: 
      col.item:
-        dataType: loc.Location
+        dataType: loc.locations
         exampleItem: !include examples/LocationItemExample.raml
     get:
       is: [ cu.oauth_read_any, col.sparse ]
@@ -87,7 +87,7 @@ uses:
     to GET or DELETE the entire contents of the object store.
   type: 
     col.collection:
-      dataType: obj.Object
+      dataType: obj.objects
       exampleCollection: !include examples/ObjectCollectionExample.raml
       exampleItem: !include examples/ObjectItemExample.raml
   get:
