@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <flow name="jsonapi-exceptionVars" doc:description="Set a couple of &quot;constants&quot; for reuse in the exception mappings.">
+        <set-session-variable variableName="quote" value="&quot;" doc:name="Session Variable"/>
+        <set-session-variable variableName="quoted" value="\\&quot;" doc:name="Session Variable"/>
+    </flow>
     <!--  jsonapi 1.0 exception handlers for use with apikit -->
     <apikit:mapping-exception-strategy name="jsonapi-exception-mapping" >
     	<apikit:mapping statusCode="409">
             <apikit:exception value="PatchConflictException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;409&quot;,      &quot;title&quot;: &quot;Conflict&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;409&quot;,      &quot;title&quot;: &quot;Conflict&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;                }              ]}" doc:name="Set Payload"/>
     	</apikit:mapping>
         <apikit:mapping statusCode="404">
             <apikit:exception value="org.mule.module.apikit.exception.NotFoundException" />
             <apikit:exception value="org.mule.api.store.ObjectDoesNotExistException"/>
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;404&quot;,      &quot;title&quot;: &quot;Resource not found&quot;, &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                 }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;404&quot;,      &quot;title&quot;: &quot;Resource not found&quot;, &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;                 }              ]}" doc:name="Set Payload"/>
         </apikit:mapping>
         <apikit:mapping statusCode="405">
             <apikit:exception value="org.mule.module.apikit.exception.MethodNotAllowedException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;405&quot;,      &quot;title&quot;: &quot;Method not allowed&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;405&quot;,      &quot;title&quot;: &quot;Method not allowed&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;                }              ]}" doc:name="Set Payload"/>
         </apikit:mapping>
         <apikit:mapping statusCode="415">
             <apikit:exception value="org.mule.module.apikit.exception.UnsupportedMediaTypeException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;415&quot;,      &quot;title&quot;: &quot;Unsupported media type&quot; ,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;               }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;415&quot;,      &quot;title&quot;: &quot;Unsupported media type&quot; ,      &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;               }              ]}" doc:name="Set Payload"/>
         </apikit:mapping>
         <apikit:mapping statusCode="406">
             <apikit:exception value="org.mule.module.apikit.exception.NotAcceptableException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;406&quot;,      &quot;title&quot;: &quot;Not acceptable&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;                }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;406&quot;,      &quot;title&quot;: &quot;Not acceptable&quot;,      &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;                }              ]}" doc:name="Set Payload"/>
         </apikit:mapping>
         <apikit:mapping statusCode="400">
             <apikit:exception value="org.mule.module.apikit.exception.BadRequestException" />
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-            <set-payload value="{ &quot;errors&quot;:  [                {       &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,      &quot;status&quot;: &quot;400&quot;,      &quot;title&quot;: &quot;Bad request&quot; ,      &quot;detail&quot;: &quot;#[exception.cause.message]&quot;               }              ]}" doc:name="Set Payload"/>
+            <set-payload value="{ &quot;errors&quot;:  [      {                &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,         &quot;status&quot;: &quot;400&quot;,               &quot;title&quot;: &quot;Bad request&quot; ,               &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;      }    ] }" doc:name="Set Payload"/>
         </apikit:mapping>
 	</apikit:mapping-exception-strategy>
 </mule>

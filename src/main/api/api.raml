@@ -51,6 +51,7 @@ uses:
     type: 
      col.item:
         dataType: wid.widgets
+        #patchDataType: wid.patch_widgets
         exampleItem: !include examples/WidgetItemExample.raml
     get:
       is: [ cu.oauth_read_any, col.sparse ]
@@ -74,6 +75,7 @@ uses:
     type: 
      col.item:
         dataType: loc.locations
+        #patchDataType: loc.patch_locations
         exampleItem: !include examples/LocationItemExample.raml
     get:
       is: [ cu.oauth_read_any, col.sparse ]

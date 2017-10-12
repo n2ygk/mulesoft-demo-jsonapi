@@ -18,6 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     <api-platform-gw:api apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery" />
     <flow name="api-main">
         <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
+        <flow-ref name="jsonapi-exceptionVars" doc:name="jsonapi-exceptionVars"/>
         <apikit:router config-ref="api-config" doc:name="APIkit Router" />
         <!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
         <!--  replace default global exception strategy with my jsonapi-flavored one -->
@@ -28,16 +29,15 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <apikit:console config-ref="api-config" doc:name="APIkit Console" />
     </flow>
     <flow name="patch:/widgets/{id}:application/vnd.api+json:api-config">
-        <scripting:component doc:name="Groovy">
-            <scripting:script engine="Groovy"><![CDATA[// example throwing a custom 409 exception
-throw new PatchConflictException('foobar')]]></scripting:script>
-        </scripting:component>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem"/>
         <!--  example of a flow-specific reference exception strategy -->
         <!--         <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
  -->
     </flow>
     <flow name="patch:/locations/{id}:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
+        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
+        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem"/>
     </flow>
     <flow name="get:/locations/{id}:api-config">
         <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
@@ -65,11 +65,11 @@ throw new PatchConflictException('foobar')]]></scripting:script>
     </flow>
     <flow name="delete:/locations/{id}:api-config">
         <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
-        <flow-ref name="jsonapiDELETEitem" doc:name="Copy_of_Flow Reference"/>
+        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem"/>
     </flow>
     <flow name="delete:/widgets/{id}:api-config">
         <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
-        <flow-ref name="jsonapiDELETEitem" doc:name="Flow Reference"/>
+        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem"/>
     </flow>
     <flow name="delete:/objects:api-config">
         <flow-ref name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore"/>
