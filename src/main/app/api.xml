@@ -40,20 +40,20 @@ throw new PatchConflictException('foobar')]]></scripting:script>
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;Location&quot;,&#xA;&quot;id&quot; : &quot;123&quot;,&#xA;&quot;attributes&quot; : {&#xA;&quot;warehouse&quot; : &quot;Briarcliff Manor&quot;,&#xA;&quot;aisle&quot; : &quot;45&quot;,&#xA;&quot;shelf&quot; : &quot;33&quot;,&#xA;&quot;bin&quot; : &quot;1&quot;&#xA;}&#xA;}&#xA;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/locations/{id}:api-config">
-        <set-variable variableName="type" value="Location" doc:name="Type is Location"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
         <flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem" />
     </flow>
     <flow name="get:/widgets/{id}:api-config">
-        <set-variable variableName="type" value="Widget" doc:name="Type is Widget"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
         <flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem" />
     </flow>
     <flow name="get:/locations:api-config">
-        <set-variable variableName="type" value="Location" doc:name="Type is Location"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
         <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation" />
         <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"/>
     </flow>
     <flow name="get:/widgets:api-config">
-        <set-variable variableName="type" value="Widget" doc:name="Type is Widget"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
         <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation" />
         <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"/>
     </flow>
@@ -64,10 +64,12 @@ throw new PatchConflictException('foobar')]]></scripting:script>
         <flow-ref name="jsonapiPOSTitem" doc:name="jsonapiPOSTitem" />
     </flow>
     <flow name="delete:/locations/{id}:api-config">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
+        <flow-ref name="jsonapiDELETEitem" doc:name="Copy_of_Flow Reference"/>
     </flow>
     <flow name="delete:/widgets/{id}:api-config">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <flow-ref name="jsonapiDELETEitem" doc:name="Flow Reference"/>
     </flow>
     <flow name="delete:/objects:api-config">
         <flow-ref name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore"/>

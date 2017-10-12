@@ -25,20 +25,28 @@ payload['id'] = flowVars['id']
 flowVars['key'] = payload['type']+':'+flowVars['id']
 result = payload]]></scripting:script>
         </scripting:transformer>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="links.self"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Store Object"/>
         <set-property propertyName="http.status" value="201" doc:name="Set 201 status"/>
-        <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
+        <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
 
     <flow name="jsonapiGETitem" doc:description="Get item with id &lt;type&gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.path']" doc:name="links.self"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+    </flow>
+    <flow name="jsonapiDELETEitem" doc:description="Delete item with id &lt;type&gt;:id.">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <objectstore:remove config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Delete Object"/>
+        <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
+        <set-payload value="#[null]" doc:name="Set Payload"/>
     </flow>
     <flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector"  doc:name="Retrieve all keys"/>
@@ -66,6 +74,7 @@ props.each{ k, v ->
     </flow>
     <flow name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Get All Keys"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
         <set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="Variable"/>
         <foreach doc:name="For Each">
             <expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/>
@@ -75,7 +84,7 @@ props.each{ k, v ->
         <set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
 
 </mule>
