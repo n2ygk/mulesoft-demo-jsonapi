@@ -1,19 +1,46 @@
 #%RAML 1.0 Library
 usage: >
-  jsonapi collection-item resourceTypes library: jsonapi-based resourceTypes and traits.
+  jsonapi collection-item library: jsonapi-based resourceTypes and traits.
   
-  This is a companion to the jsonApiLibrary.raml Library. 
+  This is a companion to the jsonApiLibrary.raml Library.
   
-  Usage:
-  ```
-  uses:
-    col: libraries/jsonApiCollections.raml
-  ```
+  **resourceTypes**
+  The `collection` and `item` resourceTypes follow the [{json:api} 1.0 recommendations](http://jsonapi.org/recommendations/#urls) 
+  regarding URL naming: a resourcePathName should be the same as it's type (both plural nouns). However, because
+  we may be using RAML Libraries for those type definitions, one can't use *resourcePathName* but must still
+  provide a *dataType*.
+  
+  **collection required parameters**:
+  - dataType: the response RAML type (e.g. `mythings`). You must also define types named e.g. `mythings_post` and
+    `mythings_patch`. These are all subclasses of on another with various properties labeled as true. This deals
+    with the requirement that response data must have `id` and `type` keys which post data can leave out the `id`
+    but must have all the required primary data attributes and patch data can leave out required attributes as it
+    only sends changes.
+  - exampleCollection: an example collection of the dataType.
+  - exampleItem: an example item of the dataType.
+  
+  **traits**
+  Traits of `pageable`, `sortable`, `sparse`, `filterable`, `includable` are provided which describe the various
+  [standard](http://jsonapi.org/format) query parameters, including [recommended](http://jsonapi.org/recommendations) usage.
+  For convenience, the `all-the-things` trait combines all the above-listed traits.
+    
+  Usage example:
+    ```
+    uses:
+      col: libraries/jsonApiCollections.raml
+    /widgets:
+      type: 
+        col.collection: 
+          dataType: wid.widgets
+          exampleCollection: !include examples/WidgetCollectionExample.raml
+          exampleItem: !include examples/WidgetItemExample.raml
+      get:
+        is: [ col.pageable, col.sparse ]
+    ```
   
   For reasons I don't quite understand, you must use this with the same `uses` key name
   (api) in your main api.raml and any other libraries that reference types defined in jsonApiLibrary.raml.
-  For other reasons I don't understand, this can't just be part of jsonApiLibrary.raml but that's probably
-  for the best as this is hand-coded.
+  For other reasons I don't understand, this can't just be part of jsonApiLibrary.raml.
   
   Copyright (c) 2017 The Trustess of Columbia University in the City of New York
   

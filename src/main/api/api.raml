@@ -2,7 +2,7 @@
 title: demo-jsonapi
 description: a sample RESTful API that conforms to jsonapi.org 1.0
 version: v1
-#baseUri: https://test-columbia-demo-jsonapi.cloudhub.io/{version}/api
+#baseUri: https://columbia-demo-jsonapi.cloudhub.io/{version}/api
 baseUri: https://mocksvc.mulesoft.com/mocks/92689760-c829-434a-b974-2f5943faf7bb
 documentation: 
   - title: About {json:api} 1.0
@@ -74,7 +74,6 @@ uses:
     type: 
      col.item:
         dataType: loc.locations
-        #patchDataType: loc.patch_locations
         exampleItem: !include examples/LocationItemExample.raml
     get:
       is: [ cu.oauth_read_any, col.sparse ]
