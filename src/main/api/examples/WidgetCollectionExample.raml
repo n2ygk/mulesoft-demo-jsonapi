@@ -1,16 +1,16 @@
 #%RAML 1.0 NamedExample
 value:
   links:
-    self: /widgets?filter[Widget.name]=can+opener,foobar
+    self: /widgets?filter[widgets.name]=can+opener,foo+bar
   data: 
     - type: widgets
       id: "123"
       attributes:
-        name: "foobar"
+        name: "foo bar"
       relationships:
         location:
           data: 
-            - type: Location
+            - type: locations
               id: "1"
           links:
             self: /widgets/123/relationships/location
@@ -22,9 +22,28 @@ value:
       relationships:
         location:
           data: 
-            - type: Location
+            - type: locations
               id: "1234"     
-            - type: Location
+            - type: locations
               id: "1235"
           links:
             self: /widgets/14/relationships/location
+  included:
+    - type: locations
+      id: "1234"
+      attributes:
+        warehouse: Briarcliff Manor
+        aisle: "45"
+        shelf: "33"
+        bin: "1"
+      links:
+        self: /locations/1234
+    - type: locations
+      id: "1235"
+      attributes:
+        warehouse: NYC
+        aisle: "4"
+        shelf: "3"
+        bin: "12"      
+      links:
+        self: /locations/1235

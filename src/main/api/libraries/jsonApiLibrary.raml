@@ -7,7 +7,7 @@ usage: >
   which is coded using the [json-schema.org](http://json-schema.org/documentation.html) specification. 
   
   The following CHANGES have been made from the schema's YAML:
-    - resource type is redefined a subclass of resource_post because id is _not_ required for POST request body 
+    - resource type is redefined a subclass of resource\_post because id is _not_ required for POST request body 
       whereas it is mandatory for response body.
     - I couldn't represent allOf for `links` so made a `pagelinks` type which extends `link`.
     - Fix attributes and relationships types (patternProperties not directly mappable to RAML)
