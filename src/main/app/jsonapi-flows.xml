@@ -40,7 +40,34 @@ result = payload]]></scripting:script>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+        <scripting:transformer doc:name="collect includes" doc:description="parse out included resources">
+            <scripting:script engine="jython"><![CDATA[import json
+import java.util.ArrayList
+p = json.loads(payload)
+print "PAYLOAD: %s"%p
+if 'relationships' in p:
+  print "RELATIONSHIPS"
+  rels = p['relationships']
+  if 'includes' not in flowVars:
+    flowVars['includeKeys'] = java.util.ArrayList()
+  for relname in rels:
+  	print "REL %s = %s"%(relname,rels[relname])
+  	if 'data' in rels[relname]:
+  		data = rels[relname]['data']
+  		print "DATA %s"%data
+  		for datum in data:
+  			print "type: %s id: %s"%(datum['type'],datum['id'])
+  			flowVars['includeKeys'].append(datum['type']+':'+datum['id'])
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <logger message="#[flowVars.includeKeys]" level="INFO" doc:name="Logger"/>
+        <set-variable variableName="includes" value="#[new java.util.ArrayList()]" doc:name="new includes"/>
+        <foreach collection="#[flowVars.includeKeys]" doc:name="For Each">
+            <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="ObjectStore"/>
+            <expression-transformer expression="#[flowVars.includes.add(payload)]" doc:name="Expression"/>
+        </foreach>
+        <logger message="#[flowVars.includes]" level="INFO" doc:name="Logger"/>
+        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}, &quot;includes&quot;: #[flowVars.includes]}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
     </flow>
     <flow name="jsonapiDELETEitem" doc:description="Delete item with id &lt;type&gt;:id.">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
