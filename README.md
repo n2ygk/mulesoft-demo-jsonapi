@@ -12,7 +12,8 @@ A demonstration MuleSoft RESTful API that is based on the [{json:api}](http://js
 - [{json:api} Mule Snippets](#jsonapi-mule-snippets)
    - [jsonapi-exceptions.xml](#jsonapi-exceptionsxml)
    - [jsonapi-flows.xml](#jsonapi-flowsxml)
-
+- [TO DO](#to-do)
+   
 ## Introduction
 
 This is a demo of a (almost)fully-baked API that follows Columbia's (developing)
@@ -426,3 +427,13 @@ The flows are:
 - **jsonQueryParamsValidation** does a simplistic job of making sure the query parameters are from the {json:api}
   vocabulary; They do no validation beyond that.
 
+## TO DO
+
+- includes
+  - Fully test add-item-includes flow, especially for missing included items.
+  - Add foreach add-item-includes to GETcollection flow
+  - and include= queryParameter filtering of returned includes.
+- Refactor lots of set payload/set variable cruft by moving into the script elements.
+- Get PATCH flow working
+- implement pageable, sortable, etc. traits
+- Document "how to write Python that uses Java objects"
