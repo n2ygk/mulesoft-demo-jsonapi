@@ -431,7 +431,7 @@ The flows are:
 
 - includes
   - Fully test add-item-includes flow, especially for missing included items.
-  - Add foreach add-item-includes to GETcollection flow
+  - eliminate duplicated includes
   - and include= queryParameter filtering of returned includes.
 - Refactor lots of set payload/set variable cruft by moving into the script elements.
 - Get PATCH flow working
