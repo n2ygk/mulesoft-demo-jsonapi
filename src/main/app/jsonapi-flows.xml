@@ -38,8 +38,8 @@ result = payload]]></scripting:script>
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.path']" doc:name="links.self"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
-        <flow-ref name="collect-included" doc:name="collect included"/>
-        <flow-ref name="add-item-included" doc:name="add item included"/>
+        <flow-ref name="collect-included-keys" doc:name="collect included"/>
+        <flow-ref name="get-included-resources" doc:name="add item included"/>
         <flow-ref name="build-response" doc:name="build response"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
@@ -51,16 +51,16 @@ result = payload]]></scripting:script>
         <foreach doc:name="For Each">
             <expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/>
             <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"/>
-            <flow-ref name="collect-included" doc:name="collect included"/>
-            <expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="Expression"/>
+            <flow-ref name="collect-included-keys" doc:name="collect included keys"/>
+            <expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="add collection item to list"/>
         </foreach>
         <set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/>
-        <flow-ref name="add-item-included" doc:name="get included resources"/>
-        <flow-ref name="build-response" doc:name="build jsonapi response"/>
+        <flow-ref name="get-included-resources" doc:name="get included resources"/>
+        <flow-ref name="build-response" doc:name="build response"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
     </flow>
-    <sub-flow name="collect-included">
+    <sub-flow name="collect-included-keys">
         <scripting:transformer doc:name="relationships -&gt; included" doc:description="parse out included resources identifiers (type:id) so they can be included.">
             <scripting:script engine="jython"><![CDATA[import java.util.ArrayList
 if 'relationships' in payload:
@@ -75,13 +75,15 @@ if 'relationships' in payload:
   		print "          DATA %s"%data
   		for datum in data:
   			print "type: %s id: %s"%(datum['type'],datum['id'])
-  			flowVars['includeKeys'].append(datum['type']+':'+datum['id'])
+  			key = datum['type']+':'+datum['id']
+  			if key not in flowVars['includeKeys']:
+  				flowVars['includeKeys'].append(key)
   if len(flowVars['includeKeys']) and 'included' not in flowVars:
     flowVars['included'] = java.util.ArrayList()
 result = payload]]></scripting:script>
         </scripting:transformer>
     </sub-flow>
-    <flow name="add-item-included">
+    <flow name="get-included-resources">
         <foreach collection="#[flowVars.includeKeys]" doc:name="For Each">
             <flow-ref name="fetch-includes" doc:name="fetch includes"/>
             <expression-transformer expression="#[flowVars.included.add(payload)]" doc:name="Expression"/>
@@ -91,7 +93,8 @@ result = payload]]></scripting:script>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch"/>
         <choice-exception-strategy doc:name="choice exception strategy">
             <catch-exception-strategy when="#[exception.causedBy(org.mule.api.store.ObjectDoesNotExistException)]" doc:name="Catch Exception Strategy">
-                <logger level="INFO" doc:name="Logger"/>
+                <logger level="WARN" doc:name="Logger" message="caught missing object exception: #[exception.cause.message]"/>
+                <set-payload value="#[null]" doc:name="Set Payload"/>
             </catch-exception-strategy>
         </choice-exception-strategy>
     </flow>
@@ -103,6 +106,8 @@ result['data'] = payload
 result['links'] = java.util.HashMap()
 result['links']['self'] = flowVars['links.self']
 if 'included' in flowVars:
+  if None in flowVars['included']:
+    flowVars['included'].remove(None) # remove nulls (missing included resources)
   result['included'] = flowVars['included']
 
 ]]></scripting:script>
