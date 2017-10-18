@@ -430,7 +430,6 @@ The flows are:
 ## TO DO
 
 - includes
-  - make included resources get a self.link and anything else that a GET of that resource would include.
   - double-check handling of missing related resource: do we leave it out or return just type & id with no attributes?
   - add include= queryParameter filtering of returned includes.
 - Refactor lots of set payload/set variable cruft by moving into the script elements.

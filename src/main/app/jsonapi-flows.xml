@@ -84,9 +84,22 @@ result = payload]]></scripting:script>
         </scripting:transformer>
     </sub-flow>
     <flow name="get-included-resources">
+        <logger level="INFO" doc:name="Logger"/>
+        <scripting:transformer doc:name="set basepath">
+            <scripting:script engine="jython"><![CDATA[flowVars['basepath'] = message.getInboundProperty('http.scheme')+ '://' + message.getInboundProperty('host') + message.getInboundProperty('http.listener.path')[:-1]
+result = payload]]></scripting:script>
+        </scripting:transformer>
         <foreach collection="#[flowVars.includeKeys]" doc:name="For Each">
             <flow-ref name="fetch-includes" doc:name="fetch includes"/>
-            <expression-transformer expression="#[flowVars.included.add(payload)]" doc:name="Expression"/>
+            <scripting:transformer doc:name="add links.self">
+                <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+import org.mule.transport.NullPayload
+if payload != org.mule.transport.NullPayload.getInstance() and 'type' in payload and 'id' in payload:
+    payload['links'] = java.util.HashMap()
+    payload['links']['self'] = flowVars['basepath'] + payload['type'] + '/' + payload['id']
+result = payload]]></scripting:script>
+            </scripting:transformer>
+            <expression-transformer expression="#[flowVars.included.add(payload)]" doc:name="add payload to outputlist"/>
         </foreach>
     </flow>
     <flow name="fetch-includes">
