@@ -8,26 +8,26 @@ value:
       attributes:
         name: "foo bar"
       relationships:
-        location:
+        locations:
           data: 
             - type: locations
               id: "1"
           links:
-            self: /widgets/123/relationships/location
+            self: /widgets/123/relationships/locations
     - type: widgets
       id: "14"
       attributes:
         name: "can opener"
         qty: 47
       relationships:
-        location:
+        locations:
           data: 
             - type: locations
               id: "1234"     
             - type: locations
               id: "1235"
           links:
-            self: /widgets/14/relationships/location
+            self: /widgets/14/relationships/locations
   included:
     - type: locations
       id: "1234"
