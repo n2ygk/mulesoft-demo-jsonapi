@@ -429,10 +429,12 @@ The flows are:
 
 ## TO DO
 
+- Add links.self for members of GET of a collection.
+- Get PATCH flow working
+- implement GET/PATCH/POST(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
 - includes
   - double-check handling of missing related resource: do we leave it out or return just type & id with no attributes?
   - add include= queryParameter filtering of returned includes.
 - Refactor lots of set payload/set variable cruft by moving into the script elements.
-- Get PATCH flow working
 - implement pageable, sortable, etc. traits
 - Document "how to write Python that uses Java objects"

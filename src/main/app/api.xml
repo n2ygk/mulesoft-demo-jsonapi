@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     <api-platform-gw:api apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery" />
     <flow name="api-main">
         <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
-        <flow-ref name="jsonapi-exceptionVars" doc:name="jsonapi-exceptionVars"/>
+        <flow-ref name="jsonapi-exceptionVars" doc:name="jsonapi-exceptionVars" />
         <apikit:router config-ref="api-config" doc:name="APIkit Router" />
         <!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
         <!--  replace default global exception strategy with my jsonapi-flavored one -->
@@ -29,33 +29,33 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <apikit:console config-ref="api-config" doc:name="APIkit Console" />
     </flow>
     <flow name="patch:/widgets/{id}:application/vnd.api+json:api-config">
-        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
-        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets" />
+        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem" />
         <!--  example of a flow-specific reference exception strategy -->
         <!--         <exception-strategy ref="jsonapi-exception-mapping" doc:name="Reference Exception Strategy"/>
  -->
     </flow>
     <flow name="patch:/locations/{id}:application/vnd.api+json:api-config">
-        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
-        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations" />
+        <flow-ref name="jsonapiPATCHitem" doc:name="jsonapiPATCHitem" />
     </flow>
     <flow name="get:/locations/{id}:api-config">
-        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations" />
         <flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem" />
     </flow>
     <flow name="get:/widgets/{id}:api-config">
-        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets" />
         <flow-ref name="jsonapiGETitem" doc:name="jsonapiGETitem" />
     </flow>
     <flow name="get:/locations:api-config">
-        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations" />
         <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation" />
-        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"/>
+        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection" />
     </flow>
     <flow name="get:/widgets:api-config">
-        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets" />
         <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation" />
-        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"/>
+        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection" />
     </flow>
     <flow name="post:/locations:application/vnd.api+json:api-config">
         <flow-ref name="jsonapiPOSTitem" doc:name="jsonapiPOSTitem" />
@@ -64,24 +64,43 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <flow-ref name="jsonapiPOSTitem" doc:name="jsonapiPOSTitem" />
     </flow>
     <flow name="delete:/locations/{id}:api-config">
-        <set-variable variableName="type" value="locations" doc:name="Type is locations"/>
-        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem"/>
+        <set-variable variableName="type" value="locations" doc:name="Type is locations" />
+        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem" />
     </flow>
     <flow name="delete:/widgets/{id}:api-config">
-        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
-        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets" />
+        <flow-ref name="jsonapiDELETEitem" doc:name="jsonapiDELETEitem" />
     </flow>
     <flow name="delete:/objects:api-config">
-        <flow-ref name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore"/>
-        <set-payload value="{&quot;message&quot;: &quot;object store deleted&quot;}" doc:name="Set Payload"/>
+        <flow-ref name="jsonapi-clearObjectStore" doc:name="jsonapi-clearObjectStore" />
+        <set-payload value="{&quot;message&quot;: &quot;object store deleted&quot;}" doc:name="Set Payload" />
     </flow>
     <flow name="get:/objects:api-config">
-        <remove-variable variableName="type" doc:name="No type"/>
-        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection"/>
+        <remove-variable variableName="type" doc:name="No type" />
+        <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection" />
     </flow>
     <flow name="post:/objects:application/vnd.api+json:api-config">
-        <set-property propertyName="http.status" value="405" doc:name="status 405"/>
-        <set-property propertyName="Allow" value="GET, DELETE" doc:name="allow GET,DELETE"/>
-        <set-payload value="#[null]" doc:name="Set Payload"/>
+        <set-property propertyName="http.status" value="405" doc:name="status 405" />
+        <set-property propertyName="Allow" value="GET, DELETE" doc:name="allow GET,DELETE" />
+        <set-payload value="#[null]" doc:name="Set Payload" />
+    </flow>
+    <flow name="delete:/widgets/{id}/relationships/locations:api-config">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="patch:/widgets/{id}/relationships/manufacturer:application/vnd.api+json:api-config">
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;companies&quot;,&#xA;&quot;id&quot; : &quot;abc123&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/widgets/abc-123/relationships/manufacturer&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="patch:/widgets/{id}/relationships/locations:application/vnd.api+json:api-config">
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;14&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/locations/14&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/widgets/{id}/relationships/manufacturer:api-config">
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;companies&quot;,&#xA;&quot;id&quot; : &quot;abc123&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/widgets/abc-123/relationships/manufacturer&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="get:/widgets/{id}/relationships/locations:api-config">
+        <set-payload value="{&#xA;&quot;data&quot; : [&#xA;{&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;14&quot;&#xA;},&#xA;{&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;15&quot;&#xA;}&#xA;],&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/widgets/abc-123/relationships/locations&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+    </flow>
+    <flow name="post:/widgets/{id}/relationships/locations:application/vnd.api+json:api-config">
+        <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
+        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;14&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/locations/14&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
     </flow>
 </mule>
