@@ -19,6 +19,7 @@
     </Appenders>
     <Loggers>
     	
+    	<AsyncLogger name="org.mule.module.scripting.component.Scriptable" level="DEBUG"/>
     	
 		<!-- Http Logger shows wire traffic on DEBUG -->
 		<AsyncLogger name="org.mule.module.http.internal.HttpMessageLogger" level="WARN"/>
