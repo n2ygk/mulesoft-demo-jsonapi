@@ -47,10 +47,19 @@ result = payload]]></scripting:script>
     <flow name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Get All Keys"/>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
-        <set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="Variable"/>
+        <set-variable variableName="outputList" value="#[new java.util.ArrayList()]" doc:name="new outputList"/>
         <foreach doc:name="For Each">
             <expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/>
             <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"/>
+            <scripting:transformer doc:name="add links.self for each item">
+                <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+import org.mule.transport.NullPayload
+if payload != org.mule.transport.NullPayload.getInstance() and 'type' in payload and 'id' in payload:
+    basepath = message.getInboundProperty('http.scheme')+ '://' + message.getInboundProperty('host') + message.getInboundProperty('http.listener.path')[:-1]
+    payload['links'] = java.util.HashMap()
+    payload['links']['self'] = basepath + payload['type'] + '/' + payload['id']
+result = payload]]></scripting:script>
+            </scripting:transformer>
             <flow-ref name="collect-included-keys" doc:name="collect included keys"/>
             <expression-transformer expression="#[flowVars.outputList.add(payload)]" doc:name="add collection item to list"/>
         </foreach>
@@ -60,9 +69,23 @@ result = payload]]></scripting:script>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
     </flow>
+    <flow name="jsonapiGETrelationships">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <scripting:transformer mimeType="application/java" doc:name="filter relationship">
+            <scripting:script engine="jython"><![CDATA[result = payload['relationships'][flowVars['relationship']]
+]]></scripting:script>
+        </scripting:transformer>
+        <flow-ref name="build-response" doc:name="build response"/>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
+    </flow>
     <sub-flow name="collect-included-keys">
         <scripting:transformer doc:name="relationships -&gt; included" doc:description="parse out included resources identifiers (type:id) so they can be included.">
             <scripting:script engine="jython"><![CDATA[import java.util.ArrayList
+import java.util.HashMap
 if 'relationships' in payload:
   print "RELATIONSHIPS"
   rels = payload['relationships']
@@ -73,6 +96,8 @@ if 'relationships' in payload:
   	if 'data' in rels[relname]:
   		data = rels[relname]['data']
   		print "          DATA %s"%data
+  		if isinstance(data,java.util.HashMap): # single item
+  			data = [data] # make a list of 1
   		for datum in data:
   			print "type: %s id: %s"%(datum['type'],datum['id'])
   			key = datum['type']+':'+datum['id']

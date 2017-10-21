@@ -429,9 +429,13 @@ The flows are:
 
 ## TO DO
 
-- Add links.self for members of GET of a collection.
 - Get PATCH flow working
 - implement GET/PATCH/POST(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
+  - GET is implemented but is it supposed to return 'included' as well?
+  - try to understand what they mean by links.related = /widgets/abc-123/locations
+- refactor duplicated code
+  - links.self, set type, key, etc.
+  - infer type from resource path instead of requiring it to be set.
 - includes
   - double-check handling of missing related resource: do we leave it out or return just type & id with no attributes?
   - add include= queryParameter filtering of returned includes.
