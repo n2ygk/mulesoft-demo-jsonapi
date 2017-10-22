@@ -166,6 +166,7 @@ if 'included' in flowVars:
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer doc:name="Merge update" mimeType="application/java">
             <scripting:script engine="jython"><![CDATA[import PatchConflictException
+import java.util.HashMap
 print "Update data %s"%flowVars['update_data']
 print "Payload %s"%payload
 x = payload
@@ -181,6 +182,8 @@ for topkey in ['attributes','relationships']:
 	    print "topkey: %s"%topkey
 	    for k in y[topkey]:
 	    	print "  k: %s"%k
+	    	if topkey not in x:
+	    		x[topkey] = java.util.HashMap()
 	        x[topkey][k] = y[topkey][k]
 print "updated payload = %s"%x
 result = x]]></scripting:script>
