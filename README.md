@@ -430,6 +430,7 @@ The flows are:
 ## TO DO
 
 - Get PATCH flow working
+  - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
 - implement GET/PATCH/POST(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
   - GET is implemented but is it supposed to return 'included' as well?
   - try to understand what they mean by links.related = /widgets/abc-123/locations
