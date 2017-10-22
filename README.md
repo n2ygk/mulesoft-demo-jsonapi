@@ -156,6 +156,34 @@ uses:
       is: [ cu.oauth_update_any ]
     delete:
       is: [ cu.oauth_delete_any ]
+    /relationships:
+      description: widget relationships
+      # no methods here...
+      /locations:
+        description: (many) locations of widgets in inventory
+        type:
+          col.relationshipCollection:
+            dataType: wid.widgets_relationships_locations
+            exampleCollection: !include examples/WidgetRelationshipsLocationsCollectionExample.raml
+            exampleItem: !include examples/WidgetRelationshipsLocationsItemExample.raml
+        get:
+          is: [ cu.oauth_read_any, col.all-the-things ]
+        post:
+          is: [ cu.oauth_create_any ]
+        patch:
+          is: [ cu.oauth_update_any ]
+        delete:
+          is: [ cu.oauth_delete_any ]
+      /manufacturer:
+        description: (one) manufacturer of the widget
+        type:
+          col.relationshipItem:
+            dataType: wid.widgets_relationships_manufacturer
+            exampleItem: !include examples/WidgetRelationshipsManufacturerItemExample.raml
+        get:
+          is: [ cu.oauth_read_any, col.all-the-things ]
+        patch:
+          is: [ cu.oauth_update_any ]
 /locations:
   displayName: locations
   description: inventory locations
@@ -206,7 +234,7 @@ as the namespace; you have to refer to definitions in the library using _namespa
 
 ###  api: libraries/jsonApiLibrary.raml
 
-[jsonApiLibrary.raml]((src/main/api/libraries/jsonApiLibrary.raml) contains the type definitions
+[jsonApiLibrary.raml](src/main/api/libraries/jsonApiLibrary.raml) contains the type definitions
 from the spec. You don't actually need to know what these are as the collections library references them:
 
 ###  col: libraries/jsonApiCollections.raml
@@ -283,8 +311,16 @@ a specific shape that you have to comply with:
 Once you inherit from `api.resource` this whole framwork is just there. Just need to override/add elements
 that are specific to your schema.
 
-Here's the Widget type example, which includes relationships to the Location type. The name of the relationship
-is `location`.
+Here's the widgets type example, which includes relationships to the locations type. The name of the relationship
+is `locations`. There's also a `manufacturer` relationship (incomplete as companies type it references is not yet defined).
+
+You'll note the wierd use of widgets\_post and widgets\_patch. This is the deal with RAML's enforcement of mandatory properties.
+For example a GET returns a `widgets` which has required `type` and `id` properties. However, if one is POSTing a new widgets,
+you want to leave out the `id` since the server will likely assign it. Similarly, even though some widgets
+`attributes` are mandatory, they all have to be optional for PATCHing.
+
+These \_post and \_patch names are mandatory if you are using the `collection` and `item` resourceTypes; the `<<dataType>>`
+is referenced as `<<dataType>>_post` for POST, `<<dataType>>_patch` for PATCH and just `<<dataType>>` for GET.
 
 ```YAML
 #%RAML 1.0 Library
@@ -292,11 +328,34 @@ usage: Schema for a Widget
 uses:
   api: jsonApiLibrary.raml
 types:
-  Widget:
-    type: api.resource
-    description: a widget's primary data
+  widgets:
+    description: a widget response
+    type: widgets_post
+    properties:
+      id:
+        required: true
+    example:
+      type: widgets
+      id: abc-123
+      attributes:
+        name: can opener
+        qty: 42
+      relationships:
+        locations:
+          data: 
+            - type: locations
+              id: "14"     
+            - type: locations
+              id: "15"
+          links:
+            self: /widgets/abc-123/relationships/location
+  widgets_post:
+    description: a POSTable widget's primary (id is optional, required attributes are indicated)
+    type: widgets_patch
+    # looks like inheritance is not multi-level. This is WET!
     properties:
       attributes:
+        required: false
         properties:
           name:
             required: true
@@ -307,44 +366,111 @@ types:
             type: integer
             minimum: 0
             description: quantity
-      relationships:
-        type: WidgetRelationships
-        required: false
-    additionalProperties: false
     example:
-      type: Widget
-      id: abc-123
+      type: widgets
       attributes:
         name: can opener
         qty: 42
       relationships:
-        location:
+        locations:
           data: 
-            - type: Location
+            - type: locations
               id: "14"     
-            - type: Location
+            - type: locations
               id: "15"
           links:
-            self: /widgets/abc-123/relationships/location
-  WidgetRelationships:
-    type: object
+            self: /widgets/abc-123/relationships/locations
+  widgets_patch:
+    description: a PATCHable widget's primary data. Only supply attributes or relationships that are changed.
+    type: api.resource_post
+    properties:
+      attributes:
+        required: false
+        properties:
+          name:
+            required: false
+            type: string
+            description: catalog name
+          qty:
+            required: false
+            type: integer
+            minimum: 0
+            description: quantity
+      relationships:
+        type: widgets_relationships
+        required: false
+    additionalProperties: false
+    example:
+      type: widgets
+      id: abc-123
+      attributes:
+        qty: 42
+      relationships:
+        locations:
+          data: 
+            - type: locations
+              id: "13"
+  widgets_relationships:
+    type: api.relationships
     description: |
       A widget's relationships: 
-        - location
+        - locations: is the list of locations a widget is stored in inventory
+        - manufacturer: the manufacturer of the widget
     properties:
-      location:
+      locations:
         type: api.relationshipMember
-        description: location in inventory
+        description: locations in inventory for the widget
+        required: false
+      manufacturer:
+        type: api.relationshipMember
+        description: manufacturer
         required: false
     example:
-      location:
+      locations:
         data: 
-          - type: Location
+          - type: locations
             id: "14"     
-          - type: Location
+          - type: locations
             id: "15"
         links:
-          self: /widgets/abc-123/relationships/location
+          self: /widgets/abc-123/relationships/locations
+      manufacturer: 
+        data: 
+          type: companies
+          id: "abc123"
+        links: 
+          self: /widgets/abc-123/relationships/manufacturer
+  # relationships have only type, id and links; no other attributes.
+  widgets_relationships_locations:
+    type: widgets_relationships_locations_post
+    properties:
+      id:
+        required: true
+  widgets_relationships_locations_post:
+    type: widgets_relationships_locations_patch
+  widgets_relationships_locations_patch:
+    type: api.resource_post
+    description: locations in inventory
+    example:
+      type: locations
+      id: "14"
+      links:
+        self: /widgets/abc-123/relationships/locations
+  widgets_relationships_manufacturer:
+    type: widgets_relationships_manufacturer_post
+    properties:
+      id:
+        required: true
+  widgets_relationships_manufacturer_post:
+    type: widgets_relationships_manufacturer_patch
+  widgets_relationships_manufacturer_patch:
+    type: api.resource_post
+    description: manufacturer
+    example:
+      type: companies
+      id: "abc123"
+      links:
+        self: /widgets/abc-123/relationships/manufacturer
 ```
 
 Location and Object are similar. See the source.
@@ -415,20 +541,26 @@ if 'fail' in props:
 
 ### jsonapi-flows.xml
 
-This module defines some common flows and implements them with Mule's Object Store. It is incomplete but a good
-starting point.
+This module defines some common flows and implements them with Mule's Object Store. It is about a 75% complete
+implementation of jsonapi. Most things are implemented with a few open items. (See [TO DO](#to-do) below.)
+You could potentially start with this code and replace the objectstore with your SQL database
+and add some side effects to various methods (where the application logic happens). Oh, and rewrite it tighter and neater.
 
 The flows are:
 
 - **jsonapiGETitem** gets an item of type `flowVars.type`. For now, you must define `type` in the calling flow.
   ![alt-text](get_set_type.png "set flowVars.type before call jsonapiGETitem flow")
 - **jsonapiGETcollection** gets a collection. As above `type` must be defined.
+- **jsonapiGETrelationships** gets the relationships for the given item.
 - **jsonapiPOSTitem** posts an item. The type is obtain from the item's `type` element.
+- **jsonapiDELETEitem** deletes an item.
+- **jsonapiPATCHitem** updates an item.
 - **jsonQueryParamsValidation** does a simplistic job of making sure the query parameters are from the {json:api}
   vocabulary; They do no validation beyond that.
 
 ## TO DO
 
+- Update this README to match what's changed!
 - Get PATCH flow working
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
 - implement GET/PATCH/POST(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
@@ -443,3 +575,4 @@ The flows are:
 - Refactor lots of set payload/set variable cruft by moving into the script elements.
 - implement pageable, sortable, etc. traits
 - Document "how to write Python that uses Java objects"
+- Make the \_patch and \_post types less kludgy.
