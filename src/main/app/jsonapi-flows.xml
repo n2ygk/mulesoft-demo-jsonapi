@@ -96,13 +96,14 @@ if 'relationships' in payload:
   	if 'data' in rels[relname]:
   		data = rels[relname]['data']
   		print "          DATA %s"%data
-  		if isinstance(data,java.util.HashMap): # single item
-  			data = [data] # make a list of 1
-  		for datum in data:
-  			print "type: %s id: %s"%(datum['type'],datum['id'])
-  			key = datum['type']+':'+datum['id']
-  			if key not in flowVars['includeKeys']:
-  				flowVars['includeKeys'].append(key)
+  		if data: # ignore null data
+  		    if isinstance(data,java.util.HashMap): # single item
+  			    data = [data] # make a list of 1
+  		    for datum in data:
+  			    print "type: %s id: %s"%(datum['type'],datum['id'])
+  			    key = datum['type']+':'+datum['id']
+  			    if key not in flowVars['includeKeys']:
+  				    flowVars['includeKeys'].append(key)
   if len(flowVars['includeKeys']) and 'included' not in flowVars:
     flowVars['included'] = java.util.ArrayList()
 result = payload]]></scripting:script>
