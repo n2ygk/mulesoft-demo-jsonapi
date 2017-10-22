@@ -161,19 +161,19 @@ if 'included' in flowVars:
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.path']" doc:name="links.self"/>
         <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer doc:name="JSON to HashMap" returnClass="java.util.HashMap"/>
         <set-variable variableName="update_data" value="#[payload]" doc:name="Save update_data"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String"/>
-        <scripting:transformer doc:name="Merge update">
-            <scripting:script engine="jython"><![CDATA[import json
-import PatchConflictException
+        <scripting:transformer doc:name="Merge update" mimeType="application/java">
+            <scripting:script engine="jython"><![CDATA[import PatchConflictException
 print "Update data %s"%flowVars['update_data']
 print "Payload %s"%payload
-x = json.loads(payload)
-y = json.loads(flowVars['update_data'])
+x = payload
+y = flowVars['update_data']
 print "x = %s"%x
+print "x[type] = %s"%x['type']
 print "y = %s"%y
+print "y[type] = %s"%y['type']
 if x['type'] != y['type'] or x['id'] != y['id']:
     raise PatchConflictException('Types or IDs do not match')
 for topkey in ['attributes','relationships']:
@@ -183,10 +183,9 @@ for topkey in ['attributes','relationships']:
 	    	print "  k: %s"%k
 	        x[topkey][k] = y[topkey][k]
 print "updated payload = %s"%x
-result = json.dumps(x)]]></scripting:script>
+result = x]]></scripting:script>
         </scripting:transformer>
         <logger message="After merge: #[payload]" level="INFO" doc:name="Logger"/>
-        <json:json-to-object-transformer doc:name="JSON to Object"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer doc:name="Object to String"/>
