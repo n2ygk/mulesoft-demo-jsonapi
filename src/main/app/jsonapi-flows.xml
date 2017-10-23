@@ -189,12 +189,10 @@ for topkey in ['attributes','relationships']:
 print "updated payload = %s"%x
 result = x]]></scripting:script>
         </scripting:transformer>
-        <logger message="After merge: #[payload]" level="INFO" doc:name="Logger"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
+        <flow-ref name="build-response" doc:name="build response"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
-    
+        <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
     </flow>
     <flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector"  doc:name="Retrieve all keys"/>
