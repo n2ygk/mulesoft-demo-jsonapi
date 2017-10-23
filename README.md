@@ -12,6 +12,7 @@ A demonstration MuleSoft RESTful API that is based on the [{json:api}](http://js
 - [{json:api} Mule Snippets](#jsonapi-mule-snippets)
    - [jsonapi-exceptions.xml](#jsonapi-exceptionsxml)
    - [jsonapi-flows.xml](#jsonapi-flowsxml)
+- [Developer Notes](#developer-notes)
 - [TO DO](#to-do)
    
 ## Introduction
@@ -65,17 +66,19 @@ modeling in RAML.
 
 ## {json:api} 1.0 and json-schema.org in RAML 1.0 snippets
 
-{json:api} standardizes the request-response flow of a RESTful applications. RAML 1.0 is the modeling
-language currently supported by MuleSoft although it looks like it may be replaced by OAS 3.0 soon.
+{json:api} standardizes the request-response flow of a RESTful applications.
+[RAML 1.0](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md) is the modeling
+language currently supported by MuleSoft although it looks like it may be replaced by
+[OAS 3.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) soon.
 
 To make it easier for a developer to adopt these tools, I've created some
-[RAML snippet](https://github.com/n2ygk/raml-snippets) based on the {json:api} specification. You
+[RAML snippets](https://github.com/n2ygk/raml-snippets) based on the {json:api} specification. You
 simply `use` these libraries in your RAML definition.
 
 ### Schemas: RAML 1.0 Types
 RAML 1.0 is json-schema.org "aligned" and allows `types` (the RAML 1.0 replacement for
 `schemas` -- which are now deprecated) to be coded either in RAML or as a json-schema JSON document.
-However, when using type inheritance (required for the{json:api} types), one must use RAML 1.0 rather than
+However, when using type inheritance (required for the {json:api} types), one must use RAML 1.0 rather than
 JSON. If you later want to covert your RAML type definition to json-schema, it's pretty easy.
 
 ### {json:api} request/reply and schema metadata
@@ -239,30 +242,48 @@ from the spec. You don't actually need to know what these are as the collections
 
 ###  col: libraries/jsonApiCollections.raml
 
-#### ResourceTypes: collection, item
+#### ResourceTypes: collection, item, relationshipCollection, relationshipItem.
 
-[jsonApiCollections.raml](src/main/api/libraries/jsonApiCollections.raml) defines resourceTypes of
-`collection` and `item`. Within these definitions are all the HTTP body types, responses, etc. All
-you need to do when invoking a collection or item is supply required paramters:
+[jsonApiCollections.raml](src/main/api/libraries/jsonApiCollections.raml) defines several resourceTypes.
 
- - **dataType** is the schema for your resource.
- - **exmapleItem** is an example item.
- - **exampleCollection** is an example collection (multiple items).
+The `collection` and `item` resourceTypes follow the [{json:api} 1.0 recommendations](http://jsonapi.org/recommendations/#urls) 
+regarding URL naming: a resourcePathName should be the same as it's type (both plural nouns). However, because
+we may be using RAML Libraries for those type definitions, one can't use *resourcePathName* but must still
+provide a *dataType*.
+
+The `relationshipCollection` is a special resourceType for _to-many_ `relationships` that allows GET, POST, PATCH & DELETE.
+(Normal `collection`s don't allow PATCH or DELETE of the entire collection.) The `relationshipItem` is a special
+resourceType for _to-one_ `relationships` that allows GET & PATCH.
+
+**collection required parameters**:
+- dataType: the response RAML type (e.g. `mythings`). You must also define types named e.g. `mythings_post` and
+  `mythings_patch`. These are all subclasses of on another with various properties labeled as true. This deals
+  with the requirement that response data must have `id` and `type` keys which post data can leave out the `id`
+  but must have all the required primary data attributes and patch data can leave out required attributes as it
+  only sends changes.
+- exampleCollection: an example collection of the dataType.
+- exampleItem: an example item of the dataType.
 
 #### Traits: pageable, sortable, sparse, filterable, includable, all-the-things
 
-You will want to add some traits that mainly apply to collections but some also to items.
-These are all directly from the {json:api} spec or the recommendations where the spec doesn't
-require them:
- 
-  - **pageable** for pagination
-  - **sortable** to sort
-  - **sparse** to limit which types' fields are returned
-  - **filterable** for filtering for values of types' fields.
-  - **includable** to limit which types are included.
+Traits of `pageable`, `sortable`, `sparse`, `filterable`, `includable` are provided which describe the various
+[standard](http://jsonapi.org/format) query parameters, including [recommended](http://jsonapi.org/recommendations) usage.
+For convenience, the `all-the-things` trait combines all the above-listed traits.
 
-**all-the-things** is a convenience trait that includes all of the above.
-
+Usage example:
+  ```
+  uses:
+	col: libraries/jsonApiCollections.raml
+  /widgets:
+	type: 
+	  col.collection: 
+		dataType: wid.widgets
+		exampleCollection: !include examples/WidgetCollectionExample.raml
+		exampleItem: !include examples/WidgetItemExample.raml
+	get:
+	  is: [ col.pageable, col.sparse ]
+  ```
+  
 ### cu: libraries/columbiaLibrary.raml
 
 [columbiaLibrary.raml](src/main/api/libraries/columbiaLibrary.raml) defines Columbia-specific securitySchemes
@@ -294,32 +315,33 @@ make sure they get added to this library.
 
 ###  wid: libraries/WidgetType.raml
 
-This demo app has Widgets in inventory at Locations. Here's the Widget type definition. The key things
-to note when you define our own types are:
+This demo app has widgets manufactured by a company and in inventory at locations. 
+Here's the `widgets` type definition. The key things to note when you define our own types are:
 
-Your type _extends_ (is a subclass of) the `api.resource` type from {json:api}. This type has
+Your type _extends_ (is a subclass of) the `api.resource_post` type from {json:api}. This type has
 a specific shape that you have to comply with:
 
 - It always has a top-level `type` string which says what type it is.
 - It always has a unique `id` string which is the instance identifier. Do not be tempted to hang any
-  semantics off the id; Use another attribute for that.
+  semantics off the id; Use an `attribute` for that.
 - It has a top-level `data` element which can be a single or array of objects (or empty).
   Under the data element are:
-  - The `attribute` element which is a map containing your "useful" attributes. Put your information here.
-  - Some additional optional elements like `relationships`.
+  - The `attributes` element which is a map containing your "useful" attributes. Put your information here.
+  - Some additional optional elements like `relationships` which describe the relationship of this
+    entity to others.
 
-Once you inherit from `api.resource` this whole framwork is just there. Just need to override/add elements
+Once you inherit from `api.resource_post` this whole framework is just there. Just need to override/add elements
 that are specific to your schema.
 
 Here's the widgets type example, which includes relationships to the locations type. The name of the relationship
 is `locations`. There's also a `manufacturer` relationship (incomplete as companies type it references is not yet defined).
 
-You'll note the wierd use of widgets\_post and widgets\_patch. This is the deal with RAML's enforcement of mandatory properties.
-For example a GET returns a `widgets` which has required `type` and `id` properties. However, if one is POSTing a new widgets,
+You'll note the wierd use of widgets\_post and widgets\_patch. This is to compensate for RAML's enforcement of mandatory properties.
+For example a GET returns a `widgets` which has required `type` and `id` properties. However, if one is POSTing a new `widgets`,
 you want to leave out the `id` since the server will likely assign it. Similarly, even though some widgets
 `attributes` are mandatory, they all have to be optional for PATCHing.
 
-These \_post and \_patch names are mandatory if you are using the `collection` and `item` resourceTypes; the `<<dataType>>`
+Defining \_post and \_patch names is **mandatory** if you are using the `collection` and `item` resourceTypes; the `<<dataType>>`
 is referenced as `<<dataType>>_post` for POST, `<<dataType>>_patch` for PATCH and just `<<dataType>>` for GET.
 
 ```YAML
@@ -479,9 +501,9 @@ Location and Object are similar. See the source.
 
 Once you've got fully-baked RAML pulled from the libraries, with all the options filled in, the power of
 API Designer or Anypoint Studio becomes apparent: they won't let you create incorrect RAML (especially useful
-when defining your types and examples) and APIkit will mock examples responses that work.
+when defining your types and examples) and APIkit will mock example responses that work.
 
-See the [Anypoint Studio-generated documentation](doc/index.html) for this app.
+See the Anypoint Studio-generated documentation in doc/index.html (open it with your browser).
 
 The mocked app that API Designer presents
 and the Mule APIkit scaffold that is generated are quite complete; APIkit enforces most stuff like checking
@@ -542,14 +564,22 @@ if 'fail' in props:
 ### jsonapi-flows.xml
 
 This module defines some common flows and implements them with Mule's Object Store. It is about a 75% complete
-implementation of jsonapi. Most things are implemented with a few open items. (See [TO DO](#to-do) below.)
+implementation of jsonapi. Most methods are implemented with a few open items. (See [TO DO](#to-do) below.)
 You could potentially start with this code and replace the objectstore with your SQL database
-and add some side effects to various methods (where the application logic happens). Oh, and rewrite it tighter and neater.
+and add some side effects to various methods (where the application logic happens). Oh, and rewrite it tighter and neater
+and submit a PR.
 
 The flows are:
 
 - **jsonapiGETitem** gets an item of type `flowVars.type`. For now, you must define `type` in the calling flow.
-  ![alt-text](get_set_type.png "set flowVars.type before call jsonapiGETitem flow")
+  ![alt-text](get_set_type.png "See XML following") or, as XML:
+  ```xml
+  <flow name="get:/locations:api-config">
+    <set-variable variableName="type" value="locations" doc:name="Type is locations">   </set-variable>
+    <flow-ref name="jsonapiQueryParamsValidation" doc:name="jsonapiQueryParamsValidation">  </flow-ref>
+    <flow-ref name="jsonapiGETcollection" doc:name="jsonapiGETcollection">  </flow-ref>
+  </flow>
+  ```
 - **jsonapiGETcollection** gets a collection. As above `type` must be defined.
 - **jsonapiGETrelationships** gets the relationships for the given item.
 - **jsonapiPOSTitem** posts an item. The type is obtain from the item's `type` element.
@@ -557,6 +587,49 @@ The flows are:
 - **jsonapiPATCHitem** updates an item.
 - **jsonQueryParamsValidation** does a simplistic job of making sure the query parameters are from the {json:api}
   vocabulary; They do no validation beyond that.
+
+## Developer Notes
+
+Here are a few notes for developers:
+
+### Client Apps
+
+- If you are writing a client app against {json:api} please don't forget that the Content-type for
+  this API is `Application/vnd.api+json`. If you try to POST or PATCH with a different MIME type
+  (such as Application/json) you'll get a 415 Unsupported Media Type response.
+- Responses from the API will all have the `Application/vnd.api+json` Content-Type with the exception
+  of:
+  - responses from the OAUth 2.0 flow: `Application/json` per [RFC 6759](https://tools.ietf.org/html/rfc6749).
+  - responses from within APIkit other than those exceptions defined in `jsonapi-exceptions.xml`
+  - responses from the Anypoint API Gateway (such as exceeding a rate limit: 429 Too Many Requests) will
+    return a text error such as "API calls exceeded" with no Content-Type header.
+  - 500 "uncaught" exceptions when stuff breaks will return a text error with no Content-Type header.
+- The APIkit does strict validation of the JSON you supply but does provide helpful error messages.
+  For example:
+  ```json
+  {
+	  "errors": [
+		  {
+			  "id": "7e727bd6-9c33-487b-a008-4aa8c44bf2bb",
+			  "status": "400",
+			  "title": "Bad request",
+			  "detail": "Error validating JSON. Error: - Missing required field \"type\""
+		  }
+	  ]
+  }
+  ```
+
+### (This) Resource Server App
+
+- Make sure to set the MIME type. For example as the last transformer in a flow before returning:
+  ```xml
+  <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
+  ```
+  If you don't, APIkit will barf all over the place like this:
+  ```
+  Failed to transform from "json" to "java.lang.String" (org.mule.api.transformer.TransformerException). (org.mule.api.transformer.TransformerMessagingException).
+  ```
+
 
 ## TO DO
 
@@ -576,3 +649,5 @@ The flows are:
 - implement pageable, sortable, etc. traits
 - Document "how to write Python that uses Java objects"
 - Make the \_patch and \_post types less kludgy.
+- See if 500 exceptions can be handled in jsonapi-exceptions.
+- Should there be a root (/) resource which lists the resources below it?
