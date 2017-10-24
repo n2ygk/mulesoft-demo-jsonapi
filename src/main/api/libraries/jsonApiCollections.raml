@@ -171,7 +171,7 @@ resourceTypes:
       description: Update an existing <<resourcePath|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_patch
+          type: <<dataType>>_patch # should this be api.relationshipToMany??
       responses:
         200:
           description: |
@@ -214,6 +214,9 @@ resourceTypes:
                   - status: "409"
                     title: Conflict
     delete:
+      body: 
+        application/vnd.api+json:
+          type: api.relationshipToMany
       responses:
         200:
           description: Sucessfully deleted. Top-level meta-data response provided.

@@ -73,14 +73,35 @@ result = payload]]></scripting:script>
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
-        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
         <scripting:transformer mimeType="application/java" doc:name="filter relationship">
-            <scripting:script engine="jython"><![CDATA[result = payload['relationships'][flowVars['relationship']]
+            <scripting:script engine="jython"><![CDATA[result = payload['relationships'][flowVars['relationship']]['data']
 ]]></scripting:script>
         </scripting:transformer>
         <flow-ref name="build-response" doc:name="build response"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
         <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
+    </flow>
+    <flow name="jsonapiDELETErelationships">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="remove" value="#[payload.data]" doc:name="set remove"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
+        <scripting:transformer doc:name="remove relationship items" mimeType="application/java">
+            <scripting:script engine="jython"><![CDATA[print "Payload %s"%payload
+print "remove %s"%flowVars['remove']
+rel = flowVars['relationship']
+if 'relationships' in payload and rel in payload['relationships'] and 'data' in payload['relationships'][rel]:
+    for r in flowVars['remove']: 
+        try:
+            payload['relationships'][rel]['data'].remove(r)
+        except ValueError:
+            pass    
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
+        <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
+        <set-payload value="#[null]" doc:name="Set Payload"/>
     </flow>
     <sub-flow name="collect-included-keys">
         <scripting:transformer doc:name="relationships -&gt; included" doc:description="parse out included resources identifiers (type:id) so they can be included.">

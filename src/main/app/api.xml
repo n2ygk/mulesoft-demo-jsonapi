@@ -85,7 +85,9 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <set-payload value="#[null]" doc:name="Set Payload" />
     </flow>
     <flow name="delete:/widgets/{id}/relationships/locations:api-config">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="relationship" value="locations" doc:name="Relationship is locations"/>
+        <flow-ref name="jsonapiDELETErelationships" doc:name="Delete relationships"/>
     </flow>
     <flow name="patch:/widgets/{id}/relationships/manufacturer:application/vnd.api+json:api-config">
         <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;companies&quot;,&#xA;&quot;id&quot; : &quot;abc123&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/widgets/abc-123/relationships/manufacturer&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
