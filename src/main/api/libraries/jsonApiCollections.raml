@@ -171,7 +171,7 @@ resourceTypes:
       description: Update an existing <<resourcePath|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_patch # should this be api.relationshipToMany??
+          type: <<dataType>>_patch
       responses:
         200:
           description: |
@@ -245,7 +245,7 @@ resourceTypes:
       description: Get a collection of <<resourcePathName>>.
       responses: 
         200:
-          description: Success. Response contains the primary data and optional metadata.
+          description: Success. Response contains the relationship linkage and optional metadata.
           body: 
             application/vnd.api+json:
               type: api.success
@@ -267,7 +267,7 @@ resourceTypes:
       description: Create a new <<resourcePathName|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_post
+          type: api.relationshipToMany
       responses:
         201:
           description: Created. Response contains the created <<resourcePathName|!singularize>>
@@ -314,7 +314,7 @@ resourceTypes:
       description: Update an existing <<resourcePath|!singularize>> relationship.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_patch
+          type: api.relationshipToMany
       responses:
         200:
           description: |
@@ -382,7 +382,7 @@ resourceTypes:
       description: Update an existing <<resourcePath|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_patch
+          type: api.relationshipToOne
       responses:
         200:
           description: |

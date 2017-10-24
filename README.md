@@ -633,11 +633,13 @@ Here are a few notes for developers:
 
 ## TO DO
 
+- Fix jsonapiCollections RAML to recognize that relationships are generic don't need a specific <<dataType>>
 - Update this README to match what's changed!
 - Get PATCH flow working
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
-- implement GET/PATCH/POST(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
+- implement GET/PATCH/POST/DELETE(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
   - GET is implemented but is it supposed to return 'included' as well?
+  - DELETE is implemented for to-many relationships
   - try to understand what they mean by links.related = /widgets/abc-123/locations
 - refactor duplicated code
   - links.self, set type, key, etc.
