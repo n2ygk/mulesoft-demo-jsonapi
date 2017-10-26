@@ -74,7 +74,8 @@ result = payload]]></scripting:script>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer mimeType="application/java" doc:name="filter relationship">
-            <scripting:script engine="jython"><![CDATA[result = payload['relationships'][flowVars['relationship']]['data']
+            <scripting:script engine="Groovy"><![CDATA[if (!payload['relationships'].containsKey(flowVars['relationship'])) throw new org.mule.module.apikit.exception.NotFoundException('relationship '+ flowVars['relationship'] + ' not found')     
+return payload['relationships'][flowVars['relationship']]['data']
 ]]></scripting:script>
         </scripting:transformer>
         <flow-ref name="build-response" doc:name="build response"/>
@@ -96,9 +97,37 @@ if 'relationships' in payload and rel in payload['relationships'] and 'data' in 
         try:
             payload['relationships'][rel]['data'].remove(r)
         except ValueError:
-            pass    
+            pass  
+    print "Data: %s len %d"%(payload['relationships'][rel]['data'],len(payload['relationships'][rel]['data']))
+    if len(payload['relationships'][rel]['data']) == 0:
+    	print "Removing empty relationship %s"%rel
+        payload['relationships'].pop(rel,None)
 result = payload]]></scripting:script>
         </scripting:transformer>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
+        <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
+        <set-payload value="#[null]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="jsonapiPATCHrelationship">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="patch" value="#[payload]" doc:name="set patch"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
+        <scripting:transformer doc:name="patch relationship item" mimeType="application/java">
+            <scripting:script engine="jython"><![CDATA[print "Payload %s"%payload
+print "patch %s"%flowVars['patch']
+rel = flowVars['relationship']
+print "relationship %s"%rel
+if 'relationships' in payload and rel in payload['relationships'] and 'data' in flowVars['patch']:
+    if flowVars['patch']['data']:
+        payload['relationships'][rel]['data'] = flowVars['patch']['data']
+    else:
+        payload['relationships'].pop(rel,None)
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <logger message="payload after replace: #[payload]" level="INFO" doc:name="Logger"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
         <set-payload value="#[null]" doc:name="Set Payload"/>
@@ -131,7 +160,6 @@ result = payload]]></scripting:script>
         </scripting:transformer>
     </sub-flow>
     <flow name="get-included-resources">
-        <logger level="INFO" doc:name="Logger"/>
         <scripting:transformer doc:name="set basepath">
             <scripting:script engine="jython"><![CDATA[flowVars['basepath'] = message.getInboundProperty('http.scheme')+ '://' + message.getInboundProperty('host') + message.getInboundProperty('http.listener.path')[:-1]
 result = payload]]></scripting:script>

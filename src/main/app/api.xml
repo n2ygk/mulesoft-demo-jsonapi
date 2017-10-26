@@ -90,10 +90,14 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <flow-ref name="jsonapiDELETErelationships" doc:name="Delete relationships"/>
     </flow>
     <flow name="patch:/widgets/{id}/relationships/manufacturer:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;companies&quot;,&#xA;&quot;id&quot; : &quot;abc123&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/widgets/abc-123/relationships/manufacturer&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="relationship" value="manufacturer" doc:name="Relationship is manufacturer"/>
+        <flow-ref name="jsonapiPATCHrelationship" doc:name="Patch relationship"/>
     </flow>
     <flow name="patch:/widgets/{id}/relationships/locations:application/vnd.api+json:api-config">
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;14&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/locations/14&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="relationship" value="locations" doc:name="Relationship is locations"/>
+        <flow-ref name="jsonapiPATCHrelationship" doc:name="Patch relationship"/>
     </flow>
     <flow name="get:/widgets/{id}/relationships/manufacturer:api-config">
         <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
