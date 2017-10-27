@@ -173,7 +173,9 @@ resourceTypes:
       description: Update an existing <<resourcePath|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_patch
+          type: object # ??
+          properties:
+            data: <<dataType>>_patch
       responses:
         200:
           description: |

@@ -213,6 +213,7 @@ if 'included' in flowVars:
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.path']" doc:name="links.self"/>
         <object-to-string-transformer doc:name="Object to String"/>
         <json:json-to-object-transformer doc:name="JSON to HashMap" returnClass="java.util.HashMap"/>
+        <set-payload value="#[payload.data]" doc:name="Set Payload"/>
         <set-variable variableName="update_data" value="#[payload]" doc:name="Save update_data"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer doc:name="Merge update" mimeType="application/java">

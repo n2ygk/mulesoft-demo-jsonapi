@@ -633,6 +633,7 @@ Here are a few notes for developers:
 
 ## TO DO
 
+- Fix PATCH of item to include data: (same problem as POST).
 - GET of json that contains a null value (valid per jsonapi) causes JSON to Object transformer to throw a serialization error. Fix.
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
