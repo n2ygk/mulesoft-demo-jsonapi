@@ -214,9 +214,7 @@ resourceTypes:
                   - status: "409"
                     title: Conflict
     delete:
-      body: 
-        application/vnd.api+json:
-          type: api.relationshipToMany
+      description: Delete an existing <<resourcePath|!singularize>>.
       responses:
         200:
           description: Sucessfully deleted. Top-level meta-data response provided.
@@ -389,7 +387,7 @@ resourceTypes:
                   - status: "409"
                     title: Conflict
     delete:
-      description: Delete relationships.
+      description: Delete relationships. Provide a list of relationship identifiers to delete from the list of relationships.
       body: 
         application/vnd.api+json:
           type: api.relationshipMember
