@@ -21,17 +21,18 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
         <scripting:transformer doc:name="Set id &amp; key">
             <scripting:script engine="jython"><![CDATA[import uuid
 flowVars['id'] = str(uuid.uuid4())
-payload['id'] = flowVars['id']
-flowVars['key'] = payload['type']+':'+flowVars['id']
+payload['data']['id'] = flowVars['id']
+flowVars['key'] = payload['data']['type']+':'+flowVars['id']
 result = payload]]></scripting:script>
         </scripting:transformer>
-        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'//:'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="links.self"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="links.self"/>
+        <set-payload value="#[payload.data]" doc:name="Set Payload"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Store Object"/>
         <set-property propertyName="http.status" value="201" doc:name="Set 201 status"/>
         <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
+        <flow-ref name="build-response" doc:name="build response"/>
         <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="{&quot;data&quot;: #[payload], &quot;links&quot;: {&quot;self&quot;: &quot;#[flowVars.'links.self']&quot;}}" mimeType="application/vnd.api+json" doc:name="Set Payload"/>
+        <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
     </flow>
 
     <flow name="jsonapiGETitem" doc:description="Get item with id &lt;type&gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?">

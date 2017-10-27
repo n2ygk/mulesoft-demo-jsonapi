@@ -633,7 +633,7 @@ Here are a few notes for developers:
 
 ## TO DO
 
-- Update this README to match what's changed!
+- GET of json that contains a null value (valid per jsonapi) causes JSON to Object transformer to throw a serialization error. Fix.
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
 - implement GET/PATCH/POST/DELETE(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
@@ -652,3 +652,4 @@ Here are a few notes for developers:
 - Make the \_patch and \_post types less kludgy.
 - See if 500 exceptions can be handled in jsonapi-exceptions.
 - Should there be a root (/) resource which lists the resources below it?
+- Learn how to use munit to test this

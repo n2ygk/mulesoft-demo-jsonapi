@@ -96,7 +96,9 @@ resourceTypes:
       description: Create a new <<resourcePathName|!singularize>>.
       body: 
         application/vnd.api+json:
-          type: <<dataType>>_post
+          type: object # ??
+          properties:
+            data: <<dataType>>_post
       responses:
         201:
           description: Created. Response contains the created <<resourcePathName|!singularize>>
