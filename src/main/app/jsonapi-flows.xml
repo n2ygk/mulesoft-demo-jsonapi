@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
 	xmlns:json="http://www.mulesoft.org/schema/mule/json"
 	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -13,7 +13,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
-http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
     <objectstore:config name="ObjectStore__Connector" objectStore-ref="_defaultUserObjectStore" entryTtl="0" persistent="true" doc:name="ObjectStore: Connector" />
     <flow name="jsonapiPOSTitem">
         <object-to-string-transformer doc:name="Object to String"/>
@@ -31,8 +32,7 @@ result = payload]]></scripting:script>
         <set-property propertyName="http.status" value="201" doc:name="Set 201 status"/>
         <set-property propertyName="location" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri'+'/'+flowVars.id]" doc:name="Set Location header"/>
         <flow-ref name="build-response" doc:name="build response"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
+        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
     </flow>
 
     <flow name="jsonapiGETitem" doc:description="Get item with id &lt;type&gt;:id. Infers the type from the http.request.path??? or just expect it to be set upstream?">
@@ -42,8 +42,7 @@ result = payload]]></scripting:script>
         <flow-ref name="collect-included-keys" doc:name="collect included"/>
         <flow-ref name="get-included-resources" doc:name="add item included"/>
         <flow-ref name="build-response" doc:name="build response"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
+        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
     </flow>
     <flow name="jsonapiGETcollection" doc:description="TODO: Fix this to properly wrap data.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector" doc:name="Get All Keys"/>
@@ -67,8 +66,7 @@ result = payload]]></scripting:script>
         <set-payload value="#[flowVars.outputList]" doc:name="Set Payload"/>
         <flow-ref name="get-included-resources" doc:name="get included resources"/>
         <flow-ref name="build-response" doc:name="build response"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
+        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
     </flow>
     <flow name="jsonapiGETrelationships">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
@@ -80,9 +78,18 @@ return payload['relationships'][flowVars['relationship']]['data']
 ]]></scripting:script>
         </scripting:transformer>
         <flow-ref name="build-response" doc:name="build response"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
+        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
+        <!-- The Object to JSON transformer throws an exception on null values so use DataWeave. -->
     </flow>
+    <sub-flow name="Object-to-jsonapi">
+        <dw:transform-message doc:name="Object to JSON" doc:description="convert to application/json (DW won't convert to application/vnd.api+json)">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+payload]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="content-type" value="application/vnd.api+json" doc:name="content-type: application/vnd.api+json"/>
+    </sub-flow>
     <flow name="jsonapiDELETErelationships">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <object-to-string-transformer doc:name="Object to String"/>
@@ -242,8 +249,7 @@ result = x]]></scripting:script>
         </scripting:transformer>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <flow-ref name="build-response" doc:name="build response"/>
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer doc:name="Object to String" mimeType="application/vnd.api+json"/>
+        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
     </flow>
     <flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector"  doc:name="Retrieve all keys"/>

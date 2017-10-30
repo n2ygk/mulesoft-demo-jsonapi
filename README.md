@@ -634,8 +634,6 @@ Here are a few notes for developers:
 ## TO DO
 
 - Add self links to relationships
-- GET of json that contains a null value (valid per jsonapi) causes JSON to Object transformer to throw a serialization error. Fix.
-  No serializer found for class org.mule.transport.NullPayload and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS) ) (through reference chain: java.util.HashMap["data"]) (org.codehaus.jackson.map.JsonMappingException). (org.mule.api.transformer.TransformerMessagingException).
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
 - implement GET/PATCH/POST/DELETE(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
