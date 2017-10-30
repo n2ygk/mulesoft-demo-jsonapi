@@ -636,9 +636,11 @@ Here are a few notes for developers:
 - Add self links to relationships
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
-- implement GET/PATCH/POST/DELETE(?) of relationships (e.g. GET /widgets/abc-123/relationships/locations)
+- implement GET/PATCH/POST/DELETE of relationships (e.g. GET /widgets/abc-123/relationships/locations)
   - GET is implemented but is it supposed to return 'included' as well?
   - DELETE is implemented for to-many relationships
+  - PATCH is implemented for to-one and to-many relationships. However it allows invalid data.
+    Check API definition to see why APIkit is allowing it.
   - try to understand what they mean by links.related = /widgets/abc-123/locations
 - refactor duplicated code
   - links.self, set type, key, etc.

@@ -124,11 +124,14 @@ result = payload]]></scripting:script>
         <set-variable variableName="patch" value="#[payload]" doc:name="set patch"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer doc:name="patch relationship item" mimeType="application/java">
-            <scripting:script engine="jython"><![CDATA[print "Payload %s"%payload
+            <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+print "Payload %s"%payload
 print "patch %s"%flowVars['patch']
 rel = flowVars['relationship']
 print "relationship %s"%rel
-if 'relationships' in payload and rel in payload['relationships'] and 'data' in flowVars['patch']:
+if 'relationships' in payload and 'data' in flowVars['patch']:
+    if rel not in payload['relationships']:
+        payload['relationships'][rel] = java.util.HashMap()
     if flowVars['patch']['data']:
         payload['relationships'][rel]['data'] = flowVars['patch']['data']
     else:
