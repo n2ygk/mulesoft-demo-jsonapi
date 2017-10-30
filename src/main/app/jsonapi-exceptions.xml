@@ -45,5 +45,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
             <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
             <set-payload value="{ &quot;errors&quot;:  [      {                &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,         &quot;status&quot;: &quot;400&quot;,               &quot;title&quot;: &quot;Bad request&quot; ,               &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;      }    ] }" doc:name="Set Payload"/>
         </apikit:mapping>
+        <apikit:mapping statusCode="500">
+            <apikit:exception value="java.lang.Exception" />
+            <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
+            <set-payload value="{ &quot;errors&quot;:  [      {                &quot;id&quot;: &quot;#[java.util.UUID.randomUUID().toString()]&quot;,         &quot;status&quot;: &quot;500&quot;,               &quot;title&quot;: &quot;Internal server error&quot; ,               &quot;detail&quot;: &quot;#[exception.cause.message.replaceAll(sessionVars.quote,sessionVars.quoted)]&quot;      }    ] }" doc:name="Set Payload"/>
+        </apikit:mapping>
 	</apikit:mapping-exception-strategy>
 </mule>

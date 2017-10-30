@@ -90,6 +90,10 @@ payload]]></dw:set-payload>
         </dw:transform-message>
         <set-property propertyName="content-type" value="application/vnd.api+json" doc:name="content-type: application/vnd.api+json"/>
     </sub-flow>
+    <sub-flow name="Object-to-jsonapi-bad" doc:description="The Object to JSON converter throws an exception on a valid null value. Replace with dataweave-based flow.">
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
+    </sub-flow>
     <flow name="jsonapiDELETErelationships">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <object-to-string-transformer doc:name="Object to String"/>
