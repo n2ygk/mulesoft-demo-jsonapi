@@ -636,6 +636,7 @@ Here are a few notes for developers:
 - Add self links to relationships
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
+  - Combine duplication of how relationships get updated between item PATCH and relationship flows.
 - implement GET/PATCH/POST/DELETE of relationships (e.g. GET /widgets/abc-123/relationships/locations)
   - GET is implemented but is it supposed to return 'included' as well?
   - DELETE is implemented for to-many relationships
@@ -652,6 +653,5 @@ Here are a few notes for developers:
 - implement pageable, sortable, etc. traits
 - Document "how to write Python that uses Java objects"
 - Make the \_patch and \_post types less kludgy.
-- See if 500 exceptions can be handled in jsonapi-exceptions.
 - Should there be a root (/) resource which lists the resources below it?
 - Learn how to use munit to test this

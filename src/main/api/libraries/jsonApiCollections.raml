@@ -99,6 +99,7 @@ resourceTypes:
           type: object # ??
           properties:
             data: <<dataType>>_post
+          additionalProperties: false
       responses:
         201:
           description: Created. Response contains the created <<resourcePathName|!singularize>>
@@ -176,6 +177,7 @@ resourceTypes:
           type: object # ??
           properties:
             data: <<dataType>>_patch
+          additionalProperties: false
       responses:
         200:
           description: |
@@ -276,6 +278,7 @@ resourceTypes:
           type: api.relationshipMember
           properties: 
             data: api.relationshipToMany
+          additionalProperties: false
           example: 
             data: 
               - type: theType
@@ -338,6 +341,7 @@ resourceTypes:
           type: api.relationshipMember
           properties: 
             data: api.relationshipToMany
+          additionalProperties: false
           example:
             data:
               - type: TheType
@@ -397,6 +401,7 @@ resourceTypes:
           type: api.relationshipMember
           properties: 
             data: api.relationshipToMany
+          additionalProperties: false
           example: 
             data: 
               - type: theType
@@ -481,6 +486,7 @@ resourceTypes:
           type: api.relationshipMember
           properties: 
             data: api.relationshipToOne
+          additionalProperties: false
           example:
             data:
               type: theType
