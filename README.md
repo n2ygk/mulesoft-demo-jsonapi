@@ -638,6 +638,7 @@ Here are a few notes for developers:
 
 ## TO DO
 
+- Fix POST of relationships which currently generates bad data that causes dataweave to blow up on get.
 - Add self links to relationships
 - Apikit still allowing incorrect POSTs (e.g. relationships missing data key)
 - PATCH flow working but:

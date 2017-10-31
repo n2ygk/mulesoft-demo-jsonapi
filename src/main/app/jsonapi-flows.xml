@@ -52,11 +52,11 @@ result = payload]]></scripting:script>
             <expression-filter expression="#[flowVars.type == null || payload.contains(flowVars.type)]" doc:name="Type filter"/>
             <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[payload]" doc:name="Fetch value"/>
             <scripting:transformer doc:name="add links.self for each item">
-                <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+                <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
 import org.mule.transport.NullPayload
 if payload != org.mule.transport.NullPayload.getInstance() and 'type' in payload and 'id' in payload:
     basepath = message.getInboundProperty('http.scheme')+ '://' + message.getInboundProperty('host') + message.getInboundProperty('http.listener.path')[:-1]
-    payload['links'] = java.util.HashMap()
+    payload['links'] = java.util.LinkedHashMap()
     payload['links']['self'] = basepath + payload['type'] + '/' + payload['id']
 result = payload]]></scripting:script>
             </scripting:transformer>
@@ -77,7 +77,9 @@ result = payload]]></scripting:script>
 return payload['relationships'][flowVars['relationship']]['data']
 ]]></scripting:script>
         </scripting:transformer>
+        <logger message="payload after getting relationship data: #[payload]" level="INFO" doc:name="Logger"/>
         <flow-ref name="build-response" doc:name="build response"/>
+        <logger message="payload after relationship build-response: #[payload]" level="INFO" doc:name="Logger"/>
         <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
         <!-- The Object to JSON transformer throws an exception on null values so use DataWeave. -->
     </flow>
@@ -112,10 +114,45 @@ if 'relationships' in payload and rel in payload['relationships'] and 'data' in 
             pass  
     print "Data: %s len %d"%(payload['relationships'][rel]['data'],len(payload['relationships'][rel]['data']))
     if len(payload['relationships'][rel]['data']) == 0:
-    	print "Removing empty relationship %s"%rel
+        print "Removing empty relationship %s"%rel
         payload['relationships'].pop(rel,None)
 result = payload]]></scripting:script>
         </scripting:transformer>
+        <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
+        <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
+        <set-payload value="#[null]" doc:name="Set Payload"/>
+    </flow>
+    <flow name="jsonapiPOSTrelationships">
+        <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
+        <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.uri']" doc:name="links.self"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
+        <set-variable variableName="post" value="#[payload]" doc:name="set post"/>
+        <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
+        <scripting:transformer doc:name="post relationship items" mimeType="application/java">
+            <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
+import java.util.ArrayList
+print "Payload %s"%payload
+print "post %s"%flowVars['post']
+rel = flowVars['relationship']
+print "relationship %s"%rel
+if 'relationships' in payload and 'data' in flowVars['post']:
+    if rel not in payload['relationships']:
+        payload['relationships'][rel] = java.util.LinkedHashMap()
+    if 'data' not in payload['relationships'][rel]:
+        payload['relationships'][rel]['data'] = java.util.ArrayList()
+    if flowVars['post']['data']:
+        for datum in flowVars['post']['data']:
+            if datum not in payload['relationships'][rel]['data']:
+                newdatum = java.util.LinkedHashMap()
+                for k,v in datum.items():
+                    newdatum[k] = v
+                payload['relationships'][rel]['data'].append(newdatum)
+            else:
+                print "datum already there: %s"%datum
+result = payload]]></scripting:script>
+        </scripting:transformer>
+        <logger message="payload after posting #[payload]" level="INFO" doc:name="Logger"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
         <set-payload value="#[null]" doc:name="Set Payload"/>
@@ -128,14 +165,14 @@ result = payload]]></scripting:script>
         <set-variable variableName="patch" value="#[payload]" doc:name="set patch"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer doc:name="patch relationship item" mimeType="application/java">
-            <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+            <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
 print "Payload %s"%payload
 print "patch %s"%flowVars['patch']
 rel = flowVars['relationship']
 print "relationship %s"%rel
 if 'relationships' in payload and 'data' in flowVars['patch']:
     if rel not in payload['relationships']:
-        payload['relationships'][rel] = java.util.HashMap()
+        payload['relationships'][rel] = java.util.LinkedHashMap()
     if flowVars['patch']['data']:
         payload['relationships'][rel]['data'] = flowVars['patch']['data']
     else:
@@ -150,25 +187,25 @@ result = payload]]></scripting:script>
     <sub-flow name="collect-included-keys">
         <scripting:transformer doc:name="relationships -&gt; included" doc:description="parse out included resources identifiers (type:id) so they can be included.">
             <scripting:script engine="jython"><![CDATA[import java.util.ArrayList
-import java.util.HashMap
+import java.util.LinkedHashMap
 if 'relationships' in payload:
   print "RELATIONSHIPS"
   rels = payload['relationships']
   if 'includeKeys' not in flowVars:
     flowVars['includeKeys'] = java.util.ArrayList()
   for relname in rels:
-  	print "        REL %s = %s"%(relname,rels[relname])
-  	if 'data' in rels[relname]:
-  		data = rels[relname]['data']
-  		print "          DATA %s"%data
-  		if data: # ignore null data
-  		    if isinstance(data,java.util.HashMap): # single item
-  			    data = [data] # make a list of 1
-  		    for datum in data:
-  			    print "type: %s id: %s"%(datum['type'],datum['id'])
-  			    key = datum['type']+':'+datum['id']
-  			    if key not in flowVars['includeKeys']:
-  				    flowVars['includeKeys'].append(key)
+    print "        REL %s = %s"%(relname,rels[relname])
+    if 'data' in rels[relname]:
+      data = rels[relname]['data']
+      print "          DATA %s"%data
+      if data: # ignore null data
+        if isinstance(data,java.util.LinkedHashMap): # single item
+          data = [data] # make a list of 1
+        for datum in data:
+          print "type: %s id: %s"%(datum['type'],datum['id'])
+          key = datum['type']+':'+datum['id']
+          if key not in flowVars['includeKeys']:
+            flowVars['includeKeys'].append(key)
   if len(flowVars['includeKeys']) and 'included' not in flowVars:
     flowVars['included'] = java.util.ArrayList()
 result = payload]]></scripting:script>
@@ -182,14 +219,14 @@ result = payload]]></scripting:script>
         <foreach collection="#[flowVars.includeKeys]" doc:name="For Each">
             <flow-ref name="fetch-includes" doc:name="fetch includes"/>
             <scripting:transformer doc:name="add links.self">
-                <scripting:script engine="jython"><![CDATA[import java.util.HashMap
+                <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
 import org.mule.transport.NullPayload
 if payload != org.mule.transport.NullPayload.getInstance() and 'type' in payload and 'id' in payload:
-    payload['links'] = java.util.HashMap()
+    payload['links'] = java.util.LinkedHashMap()
     payload['links']['self'] = flowVars['basepath'] + payload['type'] + '/' + payload['id']
 result = payload]]></scripting:script>
             </scripting:transformer>
-            <expression-transformer expression="#[flowVars.included.add(payload)]" doc:name="add payload to outputlist"/>
+            <expression-transformer expression="#[flowVars.included.add(payload)]" doc:name="add payload to included"/>
         </foreach>
     </flow>
     <flow name="fetch-includes">
@@ -203,10 +240,10 @@ result = payload]]></scripting:script>
     </flow>
     <sub-flow name="build-response">
         <scripting:transformer mimeType="application/java" doc:name="response map" doc:description="output">
-            <scripting:script engine="jython"><![CDATA[import java.util.HashMap
-result = java.util.HashMap()
+            <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
+result = java.util.LinkedHashMap()
 result['data'] = payload
-result['links'] = java.util.HashMap()
+result['links'] = java.util.LinkedHashMap()
 result['links']['self'] = flowVars['links.self']
 if 'included' in flowVars:
   if None in flowVars['included']:
@@ -226,13 +263,13 @@ if 'included' in flowVars:
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <set-variable variableName="links.self" value="#[message.inboundProperties.'http.scheme'+'://'+message.inboundProperties.host+message.inboundProperties.'http.request.path']" doc:name="links.self"/>
         <object-to-string-transformer doc:name="Object to String"/>
-        <json:json-to-object-transformer doc:name="JSON to HashMap" returnClass="java.util.HashMap"/>
+        <json:json-to-object-transformer doc:name="JSON to HashMap" returnClass="java.util.LinkedHashMap"/>
         <set-payload value="#[payload.data]" doc:name="Set Payload"/>
         <set-variable variableName="update_data" value="#[payload]" doc:name="Save update_data"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
         <scripting:transformer doc:name="Merge update" mimeType="application/java">
             <scripting:script engine="jython"><![CDATA[import PatchConflictException
-import java.util.HashMap
+import java.util.LinkedHashMap
 print "Update data %s"%flowVars['update_data']
 print "Payload %s"%payload
 x = payload
@@ -245,18 +282,17 @@ if x['type'] != y['type'] or x['id'] != y['id']:
     raise PatchConflictException('Types or IDs do not match')
 for topkey in ['attributes','relationships']:
     if topkey in y:
-	    print "topkey: %s"%topkey
-	    for k in y[topkey]:
-	    	print "  k: %s"%k
-	    	if topkey not in x:
-	    		x[topkey] = java.util.HashMap()
-	        x[topkey][k] = y[topkey][k]
+            print "topkey: %s"%topkey
+            for k in y[topkey]:
+                print "  k: %s"%k
+                if topkey not in x:
+                    x[topkey] = java.util.LinkedHashMap()
+                x[topkey][k] = y[topkey][k]
 print "updated payload = %s"%x
 result = x]]></scripting:script>
         </scripting:transformer>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <flow-ref name="build-response" doc:name="build response"/>
-        <flow-ref name="Object-to-jsonapi" doc:name="Object to jsonapi"/>
     </flow>
     <flow name="jsonapi-clearObjectStore" doc:description="Utility to clear the object store. Use with caution.">
         <objectstore:retrieve-all-keys config-ref="ObjectStore__Connector"  doc:name="Retrieve all keys"/>
