@@ -548,6 +548,11 @@ throw new PatchConflictException('foobar')
 
 This requires that you include the [src/main/java/PatchConflictException.java](src/main/java/PatchConflictException.java).
 
+#### 500 Internal server error
+
+This catch-all exception is also added for anything that is a `java.lang.Exception` that is not caught by a more-specific
+error handler.
+
 #### Sidebar: Python can raise Java exceptions but they are wrapped in PyException
 
 Unfortunately, Jython wraps all exceptions in the PyException class: You have to catch `org.python.core.PyException`

@@ -18,7 +18,6 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     <api-platform-gw:api apiName="demo-jsonapi" version="${api.version}" flowRef="api-main" create="false" apikitRef="api-config" doc:name="API Autodiscovery" />
     <flow name="api-main">
         <http:listener config-ref="api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
-        <flow-ref name="jsonapi-exceptionVars" doc:name="jsonapi-exceptionVars" />
         <apikit:router config-ref="api-config" doc:name="APIkit Router" />
         <!--  <exception-strategy ref="api-apiKitGlobalExceptionMapping" doc:name="Reference Exception Strategy"/> -->
         <!--  replace default global exception strategy with my jsonapi-flavored one -->
@@ -110,7 +109,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <flow-ref name="jsonapiGETrelationships" doc:name="GET relationships"/>
     </flow>
     <flow name="post:/widgets/{id}/relationships/locations:application/vnd.api+json:api-config">
-        <set-property propertyName="Content-Type" value="application/vnd.api+json" doc:name="Property"/>
-        <set-payload value="{&#xA;&quot;data&quot; : {&#xA;&quot;type&quot; : &quot;locations&quot;,&#xA;&quot;id&quot; : &quot;14&quot;&#xA;},&#xA;&quot;links&quot; : {&#xA;&quot;self&quot; : &quot;/locations/14&quot;&#xA;}&#xA;}" doc:name="Set Payload"/>
+        <set-variable variableName="type" value="widgets" doc:name="Type is widgets"/>
+        <set-variable variableName="relationship" value="locations" doc:name="Relationship is locations"/>
+        <flow-ref name="jsonapiPOSTrelationships" doc:name="POST relationships"/>
     </flow>
 </mule>
