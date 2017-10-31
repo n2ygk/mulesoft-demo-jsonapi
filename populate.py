@@ -74,19 +74,23 @@ widgets = [
             "qty": 123
         },
         "relationships": {
-            "locations": [
-                {
-                    "type": "locations",
-                    "id": locIds[0]
-                },
-                {
-                    "type": "locations",
-                    "id": locIds[1]
-                },
-            ],
+            "locations": {
+                "data": [
+                    {
+                        "type": "locations",
+                        "id": locIds[0]
+                    },
+                    {
+                        "type": "locations",
+                        "id": locIds[1]
+                    },
+                ]
+            },
             "manufacturer": {
-                "type": "companies",
-                "id": "none"
+                "data": {
+                    "type": "companies",
+                    "id": "none"
+                }
             }
         }
     },
@@ -103,12 +107,14 @@ widgets = [
             "name": "stapler",
         },
         "relationships": {
-            "locations": [
-                {
-                    "type": "locations",
-                    "id": locIds[2]
-                },
-            ]
+            "locations": {
+                "data": [
+                    {
+                        "type": "locations",
+                        "id": locIds[2]
+                    },
+                ]
+            }
         }
     },
 ]

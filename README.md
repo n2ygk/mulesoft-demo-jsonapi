@@ -639,6 +639,7 @@ Here are a few notes for developers:
 ## TO DO
 
 - Add self links to relationships
+- Apikit still allowing incorrect POSTs (e.g. relationships missing data key)
 - PATCH flow working but:
   - If deleting to-many relationship {data:[]} or to-one {data: null} should remove the relationship?
   - Combine duplication of how relationships get updated between item PATCH and relationship flows.
