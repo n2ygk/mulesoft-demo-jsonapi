@@ -638,7 +638,7 @@ Here are a few notes for developers:
 
 ## TO DO
 
-- Fix POST of relationships which currently generates bad data that causes dataweave to blow up on get.
+- Give up on Python and refactor scripts in Groovy. Too many problems with implicit type conversions from Java types.
 - Add self links to relationships
 - Apikit still allowing incorrect POSTs (e.g. relationships missing data key)
 - PATCH flow working but:
@@ -646,9 +646,11 @@ Here are a few notes for developers:
   - Combine duplication of how relationships get updated between item PATCH and relationship flows.
 - implement GET/PATCH/POST/DELETE of relationships (e.g. GET /widgets/abc-123/relationships/locations)
   - GET is implemented but is it supposed to return 'included' as well?
+  - Should GET of a missing relationship return 404 or data: [] | null? Currently returns 404.
   - DELETE is implemented for to-many relationships
   - PATCH is implemented for to-one and to-many relationships. However it allows invalid data.
     Check API definition to see why APIkit is allowing it.
+  - POST is implemented.
   - try to understand what they mean by links.related = /widgets/abc-123/locations
 - refactor duplicated code
   - links.self, set type, key, etc.
@@ -658,7 +660,6 @@ Here are a few notes for developers:
   - add include= queryParameter filtering of returned includes.
 - Refactor lots of set payload/set variable cruft by moving into the script elements.
 - implement pageable, sortable, etc. traits
-- Document "how to write Python that uses Java objects"
 - Make the \_patch and \_post types less kludgy.
 - Should there be a root (/) resource which lists the resources below it?
 - Learn how to use munit to test this

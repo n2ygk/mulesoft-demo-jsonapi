@@ -92,10 +92,6 @@ payload]]></dw:set-payload>
         </dw:transform-message>
         <set-property propertyName="content-type" value="application/vnd.api+json" doc:name="content-type: application/vnd.api+json"/>
     </sub-flow>
-    <sub-flow name="Object-to-jsonapi-bad" doc:description="The Object to JSON converter throws an exception on a valid null value. Replace with dataweave-based flow.">
-        <json:object-to-json-transformer doc:name="Object to JSON"/>
-        <object-to-string-transformer mimeType="application/vnd.api+json" doc:name="Object to String"/>
-    </sub-flow>
     <flow name="jsonapiDELETErelationships">
         <set-variable variableName="key" value="#[flowVars.type+':'+message.inboundProperties.'http.uri.params'.id]" doc:name="Set type:id key"/>
         <object-to-string-transformer doc:name="Object to String"/>
@@ -129,30 +125,32 @@ result = payload]]></scripting:script>
         <json:json-to-object-transformer returnClass="java.util.Map" doc:name="JSON to Object"/>
         <set-variable variableName="post" value="#[payload]" doc:name="set post"/>
         <objectstore:retrieve config-ref="ObjectStore__Connector" key="#[flowVars.key]" doc:name="Get Object"/>
-        <scripting:transformer doc:name="post relationship items" mimeType="application/java">
-            <scripting:script engine="jython"><![CDATA[import java.util.LinkedHashMap
-import java.util.ArrayList
-print "Payload %s"%payload
-print "post %s"%flowVars['post']
-rel = flowVars['relationship']
-print "relationship %s"%rel
-if 'relationships' in payload and 'data' in flowVars['post']:
-    if rel not in payload['relationships']:
-        payload['relationships'][rel] = java.util.LinkedHashMap()
-    if 'data' not in payload['relationships'][rel]:
-        payload['relationships'][rel]['data'] = java.util.ArrayList()
-    if flowVars['post']['data']:
-        for datum in flowVars['post']['data']:
-            if datum not in payload['relationships'][rel]['data']:
-                newdatum = java.util.LinkedHashMap()
-                for k,v in datum.items():
-                    newdatum[k] = v
-                payload['relationships'][rel]['data'].append(newdatum)
-            else:
-                print "datum already there: %s"%datum
-result = payload]]></scripting:script>
+        <scripting:transformer doc:name="post relationships">
+            <scripting:script engine="Groovy"><![CDATA[def rel = flowVars['relationship']
+println "relationship " + rel
+if (!payload['relationships'].containsKey(rel))  { 
+	payload['relationships'][rel] = new java.util.LinkedHashMap() 
+}
+if (!payload['relationships'][rel].containsKey('data')) {
+	payload['relationships'][rel]['data'] = new java.util.ArrayList()
+}
+if (payload.containsKey('relationships') && flowVars['post'].containsKey('data')) {
+	if (flowVars['post']['data']) {
+		println "  :: payload['relationships'][rel]['data'] = " + payload['relationships'][rel]['data']
+		for (datum in flowVars['post']['data']) {
+			println "   DATUM " + datum
+			if (!payload['relationships'][rel]['data'].contains(datum)) {
+				println "   appending datum: " + datum
+				payload['relationships'][rel]['data'].add(datum)
+			} else {
+				println "   datum already there"
+			}
+		}
+	}
+}
+return payload
+]]></scripting:script>
         </scripting:transformer>
-        <logger message="payload after posting #[payload]" level="INFO" doc:name="Logger"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
         <set-payload value="#[null]" doc:name="Set Payload"/>
@@ -179,7 +177,6 @@ if 'relationships' in payload and 'data' in flowVars['patch']:
         payload['relationships'].pop(rel,None)
 result = payload]]></scripting:script>
         </scripting:transformer>
-        <logger message="payload after replace: #[payload]" level="INFO" doc:name="Logger"/>
         <objectstore:store config-ref="ObjectStore__Connector" key="#[flowVars.key]" value-ref="#[payload]" doc:name="Replace Object" overwrite="true"/>
         <set-property propertyName="http.status" value="204" doc:name="Set 204 status"/>
         <set-payload value="#[null]" doc:name="Set Payload"/>
@@ -246,6 +243,7 @@ result['data'] = payload
 result['links'] = java.util.LinkedHashMap()
 result['links']['self'] = flowVars['links.self']
 if 'included' in flowVars:
+  print "INCLUDED: "%flowVars['included']
   if None in flowVars['included']:
     flowVars['included'].remove(None) # remove nulls (missing included resources)
   result['included'] = flowVars['included']
