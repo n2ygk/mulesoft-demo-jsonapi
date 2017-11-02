@@ -9,6 +9,7 @@ A demonstration MuleSoft RESTful API that is based on the [{json:api}](http://js
 - [The Example API's RAML](#the-example-apis-raml)
 - [RAML Libraries](#raml-libraries)
 - [The Mule App](#the-mule-app)
+  - [populate.py](#populate.py)
 - [{json:api} Mule Snippets](#jsonapi-mule-snippets)
    - [jsonapi-exceptions.xml](#jsonapi-exceptionsxml)
    - [jsonapi-flows.xml](#jsonapi-flowsxml)
@@ -503,18 +504,41 @@ Once you've got fully-baked RAML pulled from the libraries, with all the options
 API Designer or Anypoint Studio becomes apparent: they won't let you create incorrect RAML (especially useful
 when defining your types and examples) and APIkit will mock example responses that work.
 
-See the Anypoint Studio-generated documentation in doc/index.html (open it with your browser).
+See the Anypoint Studio-generated documentation in `doc/index.html` (open it with your browser).
 
 The mocked app that API Designer presents
 and the Mule APIkit scaffold that is generated are quite complete; APIkit enforces most stuff like checking
 for valid mediatypes (Application/vnd.api+json) although it does not enforce RAML securedBy policies (use
-the [OAuth2 Scope Enforcement](https://github.com/n2ygk/mulesoft-oauth2-scope-enforcer) custom policy for that
-nor does it prevent extra query parameters beyond those that are defined. Also, the default APIkit exception
-mappings (e.g. what to return with a 404 status) do not comply with {json:api}. For that there are:
+the [OAuth2 Scope Enforcement](https://github.com/n2ygk/mulesoft-oauth2-scope-enforcer) custom policy for that)
+nor does it prevent extra query parameters beyond those that are defined.
+
+### populate.py
+
+Use [populate.py](popuplate.py) to initialize the object store to a known state. Start the app running
+in AnyPoint Studio or in cloudhub, get an OAuth 2.0 access token (e.g. using Postman), and run it:
+
+```bash
+demo-jsonapi$ ./populate.py -h
+Usage: populate.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -t TOKEN, --token=TOKEN
+                        access token
+  -r RESOURCE_URI, --resource_uri=RESOURCE_URI
+                        resource server base uri [default:
+                        https://localhost:8082/v1/api]
+
+demo-jsonapi$ ./populate.py -t RqfGUj3UV1A6JVucUjtl72chtSmC
+<Response [204]>
+['5d9598e3-47d0-45bb-b773-52e1518bd3d5', '10b70494-0cf4-4f3c-b364-7d1d2edb9a62', 'bb8d3cf5-f54b-4ade-9d88-42b4766ac2b5']
+['1f88e87f-1488-433a-b3eb-87bc2545b8c2', '1d57767e-1738-4f2d-889d-28e2bd3c9f01', '39cabd2e-8055-45dd-871e-8c496f311d46']
+```
 
 ## {json:api} Mule Snippets
 
-The following Mule snippets enhance your API to be {json:api} compatbile.
+The default APIkit exception mappings (e.g. what to return with a 404 status) do not comply with {json:api}. For that there are
+the following Mule snippets enhance your API to be {json:api} compatible.
 
 ### jsonapi-exceptions.xml
 
@@ -553,9 +577,10 @@ This requires that you include the [src/main/java/PatchConflictException.java](s
 This catch-all exception is also added for anything that is a `java.lang.Exception` that is not caught by a more-specific
 error handler.
 
-#### Sidebar: Python can raise Java exceptions but they are wrapped in PyException
+#### Sidebar: Python not recommended
 
-Unfortunately, Jython wraps all exceptions in the PyException class: You have to catch `org.python.core.PyException`
+Python scripts can raise Java exceptions but unfortunately, Jython wraps all exceptions
+in the PyException class: You have to catch `org.python.core.PyException`
 and then figure out how to unwrap it and route it to the correct handler. If you can figure out how to get this
 to work, please let me know!
 
@@ -565,6 +590,15 @@ props = message.getInboundProperty('http.query.params')
 if 'fail' in props:
   raise org.mule.module.apikit.exception.BadRequestException("foo")
 ```
+
+In general though, using Python/Jython with Mule is a bad idea:
+1. You can't raise Java exceptions in a reasonable way.
+2. It's only Python 2.x and will never be Python 3.
+3. You don't have enough control over the Java Types using Python constructs, leading to weird problems
+   like casting Java types into Python types at the wrong times.
+
+After having banged my head against the wall trying to use Python, I've decided to implement any scripting
+I need in Groovy. It's easy enough to translate Python to Groovy as a lot of the notation is similar.
 
 ### jsonapi-flows.xml
 

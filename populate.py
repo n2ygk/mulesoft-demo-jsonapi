@@ -6,12 +6,30 @@ import json
 import sys
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from optparse import OptionParser
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-token=sys.argv[1]
-objs = 'https://127.0.0.1:8082/v1/api/objects'
-locs = 'https://127.0.0.1:8082/v1/api/locations'
-wids = 'https://127.0.0.1:8082/v1/api/widgets'
+parser = OptionParser()
+parser.add_option('-t','--token',
+                  type='string',
+                  help='access token')
+parser.add_option('-r','--resource_uri',
+                  type='string',
+                  default='https://localhost:8082/v1/api',
+                  help='resource server base uri [default: %default]')
+
+parser.parse_args()
+
+uri = parser.values.resource_uri
+token = parser.values.token
+
+if not token:
+    parser.error('Must supply a valid access token')
+
+objs = uri+'/objects'
+locs = uri+'/locations'
+wids = uri+'/widgets'
 
 headers = {
     'authorization': 'Bearer ' + token,
