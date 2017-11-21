@@ -307,7 +307,7 @@ result = x]]></scripting:script>
 <!-- ]]></scripting:script> -->
 <!--         </scripting:transformer> -->
         <scripting:transformer doc:name="Groovy">
-            <scripting:script engine="Groovy"><![CDATA[def QPnames = ['page','sort','fields','filter','include']
+            <scripting:script engine="Groovy"><![CDATA[def QPnames = ['page','sort','fields','filter','include', 'access_token']
 def props = message.getInboundProperty('http.query.params')
 props.each{ k, v ->
   println "GROOVY: "+k
